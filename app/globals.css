@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Safari's rubber-band scroll exposes the page background behind the app. */
+    background: theme('colors.paper');
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    /* 100dvh, never 100vh — vh is wrong whenever Safari's bars are showing. */
+    min-height: 100dvh;
+    /* Controls sit above the home indicator in standalone mode. */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /*
+   * Below 16px Safari zooms the viewport on focus and does not zoom back.
+   * This is a functional requirement, not a typography preference — do not
+   * lower it, and do not override it per-field.
+   */
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px;
+  }
+
+  /*
+   * There is no hover on a phone. The grey flash Safari paints on tap is not
+   * an affordance, so kill it and supply a real active state instead.
+   */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /* The structure-axis tap targets. Explicit active state, no hover. */
+  .axis {
+    @apply flex-1 rounded-lg border border-line py-3 text-center text-[15px] transition-none;
+  }
+  .axis[aria-pressed='true'] {
+    @apply border-wine bg-wine text-white;
+  }
+  .axis:active {
+    @apply scale-[0.97] bg-line;
+  }
+  .axis[aria-pressed='true']:active {
+    @apply bg-wine/80;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line bg-white px-3 py-2.5 outline-none;
+  }
+  .field:focus {
+    @apply border-wine;
+  }
+
+  .btn {
+    @apply w-full rounded-xl bg-wine py-3.5 font-medium text-white;
+  }
+  .btn:active {
+    @apply bg-wine/80;
+  }
+  .btn:disabled {
+    @apply bg-muted opacity-60;
+  }
+}

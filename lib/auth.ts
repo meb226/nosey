@@ -11,10 +11,19 @@ const COOKIE = 'wino_taster'
  */
 const MAX_AGE = 60 * 60 * 24 * 365
 
-function secret(): Uint8Array {
+/**
+ * TextEncoder returns Uint8Array<ArrayBufferLike>, which under strict TS does
+ * not satisfy WebCrypto's BufferSource (it could in principle be backed by a
+ * SharedArrayBuffer). It never is here.
+ */
+function bytes(s: string): BufferSource {
+  return new TextEncoder().encode(s) as BufferSource
+}
+
+function secret(): BufferSource {
   const s = process.env.WINO_COOKIE_SECRET
   if (!s) throw new Error('WINO_COOKIE_SECRET is not set. See .env.local.example.')
-  return new TextEncoder().encode(s)
+  return bytes(s)
 }
 
 async function sign(value: string): Promise<string> {
@@ -25,7 +34,7 @@ async function sign(value: string): Promise<string> {
     false,
     ['sign'],
   )
-  const mac = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value))
+  const mac = await crypto.subtle.sign('HMAC', key, bytes(value))
   return Buffer.from(mac).toString('base64url')
 }
 

@@ -63,3 +63,26 @@ create table if not exists notes (
 create index if not exists notes_bottle_idx   on notes (bottle_id);
 create index if not exists bottles_session_idx on bottles (session_id);
 create index if not exists sessions_number_idx on sessions (number desc);
+
+-- Not in the MIK-33 schema block. Additive cache table: an explanation costs
+-- ~2 cents and is non-deterministic, so regenerating it on every page load
+-- would both cost more and quietly change what you were told last time.
+-- Keyed per taster because the structure check is against that taster's calls.
+create table if not exists explanations (
+  bottle_id  uuid not null references bottles(id) on delete cascade,
+  taster     text not null,
+  body       jsonb not null,
+  created_at timestamptz not null default now(),
+  primary key (bottle_id, taster)
+);
+
+-- The flight comparison is per session, not per bottle: it only unlocks once
+-- this taster has written a note for every bottle, so it can't anchor a note
+-- they haven't made yet.
+create table if not exists flight_notes (
+  session_id uuid not null references sessions(id) on delete cascade,
+  taster     text not null,
+  body       jsonb not null,
+  created_at timestamptz not null default now(),
+  primary key (session_id, taster)
+);

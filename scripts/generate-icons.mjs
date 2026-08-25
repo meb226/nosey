@@ -1,6 +1,7 @@
 import sharp from 'sharp'
 import { mkdir, writeFile, access } from 'node:fs/promises'
 import { basename } from 'node:path'
+import palette from '../palette.json' with { type: 'json' }
 
 /**
  * Home-screen icons.
@@ -23,9 +24,9 @@ import { basename } from 'node:path'
  *    The manifest entries are for Android and desktop. Both are generated.
  */
 
-const GROUND = '#dfa3f5'
-const INK = '#241a2b'
-const FOLDER = '#9900cc'
+// From palette.json, the same file Tailwind reads — so the icon and the UI
+// cannot drift apart.
+const { ground: GROUND, ink: INK, folder: FOLDER } = palette
 
 /** The stand-in until a real logo lands: a tilted glass, filled. */
 const FALLBACK = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -64,6 +65,68 @@ function flag(name) {
  * with the app's ground colour would draw a border around it. Sampling the
  * source's own corner pixel makes any letterboxing invisible instead.
  */
+/**
+ * Repaint the logo's background to the app's folder purple.
+ *
+ * A flood fill from the border, not a colour swap: the wine surface at the rim
+ * is also purple, and a swap would hit it. The background is the only purple
+ * region connected to the edge of the canvas, so filling inward from the border
+ * reaches it and nothing else.
+ *
+ * This is what makes padding seamless — once the background is genuinely flat
+ * and known, the pad matches it exactly and no backdrop trickery is needed.
+ */
+async function normalizeBackground(src, target) {
+  const { data, info } = await sharp(src)
+    .flatten({ background: target })
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+
+  const { width: w, height: h, channels: ch } = info
+  const tr = parseInt(target.slice(1, 3), 16)
+  const tg = parseInt(target.slice(3, 5), 16)
+  const tb = parseInt(target.slice(5, 7), 16)
+
+  const seedR = data[0], seedG = data[1], seedB = data[2]
+  const TOL = 78 * 78
+  const near = (i) => {
+    const dr = data[i] - seedR, dg = data[i + 1] - seedG, db = data[i + 2] - seedB
+    return dr * dr + dg * dg + db * db <= TOL
+  }
+
+  const seen = new Uint8Array(w * h)
+  const stack = []
+  for (let x = 0; x < w; x++) {
+    stack.push(x, (h - 1) * w + x)
+  }
+  for (let y = 0; y < h; y++) {
+    stack.push(y * w, y * w + w - 1)
+  }
+
+  let filled = 0
+  while (stack.length) {
+    const p = stack.pop()
+    if (seen[p]) continue
+    const i = p * ch
+    if (!near(i)) continue
+    seen[p] = 1
+    data[i] = tr
+    data[i + 1] = tg
+    data[i + 2] = tb
+    filled++
+    const x = p % w
+    const y = (p / w) | 0
+    if (x > 0) stack.push(p - 1)
+    if (x < w - 1) stack.push(p + 1)
+    if (y > 0) stack.push(p - w)
+    if (y < h - 1) stack.push(p + w)
+  }
+
+  const pct = Math.round((filled / (w * h)) * 100)
+  console.log(`  background repainted to ${target} (${pct}% of the canvas, flood-filled from the edges)`)
+  return sharp(data, { raw: { width: w, height: h, channels: ch } }).png().toBuffer()
+}
+
 async function sampleCorner(src) {
   const { data } = await sharp(src)
     .extract({ left: 0, top: 0, width: 1, height: 1 })
@@ -93,25 +156,26 @@ async function findSource() {
 }
 
 const source = await findSource()
-const input = source ?? Buffer.from(FALLBACK)
+let input = source ?? Buffer.from(FALLBACK)
 
 // A supplied logo is treated as full-bleed unless told otherwise; the drawn
 // fallback is a floating mark and wants breathing room.
-const BG = flag('bg') ?? (source ? await sampleCorner(source) : GROUND)
+const BG = flag('bg') ?? FOLDER
 const INSET = flag('inset') != null ? Number(flag('inset')) : source ? 0 : 0.1
 
 if (source) {
   const meta = await sharp(source).metadata()
   console.log(`source: ${basename(source)} (${meta.width}×${meta.height}${meta.hasAlpha ? ', has alpha' : ''})`)
-  console.log(`  background sampled from its top-left pixel: ${BG}`)
-  if (BG.toLowerCase() !== FOLDER.toLowerCase()) {
-    console.log(`  note: the app's folder purple is ${FOLDER} — the icon does not have to match, but they will sit near each other on the home screen`)
-  }
+  const found = await sampleCorner(source)
+  console.log(`  its own background: ${found}`)
   if (meta.hasAlpha) {
     console.log(`  transparency will be flattened onto ${BG} — iOS would use black otherwise`)
   }
   if (meta.width && meta.height && meta.width !== meta.height) {
     console.log('  not square: it will be letterboxed onto the ground colour rather than cropped')
+  }
+  if (!process.argv.includes('--keep-bg')) {
+    input = await normalizeBackground(source, BG)
   }
 } else {
   console.log('source: the built-in drawn mark (no assets/logo.* found)')
@@ -122,20 +186,36 @@ if (source) {
  * own corners, so 10% keeps artwork clear of the mask; Android's maskable
  * spec crops to a 40%-radius circle, which needs closer to 20%.
  */
+/**
+ * When a render needs padding, the fill cannot be a single sampled colour: a
+ * logo whose background carries any gradient will show a visible box where the
+ * flat pad meets it. So the backdrop is the source itself, blown up to fill and
+ * heavily blurred — it matches the artwork's own colours and gradient at every
+ * edge, and the seam disappears.
+ */
+async function backdrop(size) {
+  return sharp(input)
+    .resize(size, size, { fit: 'cover' })
+    .blur(Math.max(2, Math.round(size / 12)))
+    .flatten({ background: BG })
+    .toBuffer()
+}
+
 async function render(out, size, inset) {
   const art = Math.round(size * (1 - inset * 2))
   const pad = Math.round((size - art) / 2)
   const resized = await sharp(input)
     .resize(art, art, { fit: 'contain', background: BG })
     .toBuffer()
-  await sharp({
-    create: { width: size, height: size, channels: 4, background: BG },
-  })
+
+  const base = sharp({ create: { width: size, height: size, channels: 4, background: BG } })
+
+  await base
     .composite([{ input: resized, top: pad, left: pad }])
     .flatten({ background: BG })
     .png()
     .toFile(out)
-  console.log(`  ${out} (${size}×${size})`)
+  console.log(`  ${out} (${size}×${size})${pad > 0 ? ` — ${Math.round(inset * 100)}% margin, blurred backdrop` : ''}`)
 }
 
 await mkdir('public', { recursive: true })

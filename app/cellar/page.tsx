@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { currentTaster } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { AXES } from '@/lib/axes'
+import palette from '@/palette.json'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,11 +32,11 @@ function Star({ className }: { className?: string }) {
 
 /** Stable colour per grape, so the shelf is scannable before you read a word. */
 function hueFor(grape: string | null): string {
-  if (!grape) return '#b8aec2'
+  if (!grape) return palette.empty
   let h = 0
   for (let i = 0; i < grape.length; i++) h = (h * 31 + grape.charCodeAt(i)) >>> 0
-  const palette = AXES.filter((a) => a.kind === 'level').map((a) => a.chip)
-  return palette[h % palette.length]
+  const wheel = AXES.filter((a) => a.kind === 'level').map((a) => a.chip)
+  return wheel[h % wheel.length]
 }
 
 export default async function Cellar({

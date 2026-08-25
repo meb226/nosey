@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Epilogue } from 'next/font/google'
+import palette from '@/palette.json'
 import './globals.css'
 
 // Self-hosted by next/font: no request to Google at runtime, no layout shift
@@ -22,7 +23,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   // The save button sits where the home indicator is.
   viewportFit: 'cover',
-  themeColor: '#dfa3f5',
+  themeColor: palette.ground,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

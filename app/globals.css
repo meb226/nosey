@@ -41,7 +41,7 @@
 
 @layer components {
   /*
-   * A ROW is a folder: #9900cc with white type, white rule.
+   * A ROW is a folder: the `folder` colour with white type, a white rule.
    * A SURFACE YOU TYPE INTO is white with dark type.
    * That split is the whole system — it is what makes state readable at a
    * glance rather than something you have to squint at.

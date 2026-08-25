@@ -1,0 +1,23 @@
+{
+  "_comment": "One source of truth for colour. tailwind.config.ts and scripts/generate-icons.mjs both read this file, so a hex is never written down twice. Change it here and both the UI and the home-screen icon follow.",
+
+  "ground": "#dfa3f5",
+  "groundtop": "#e9bcf9",
+
+  "folder": "#9900cc",
+  "folderopen": "#7d00a8",
+  "onfolder": "#ffffff",
+  "onfoldermuted": "#eacff5",
+
+  "ink": "#241a2b",
+  "muted": "#6f6479",
+  "empty": "#b8aec2",
+  "hairline": "#ddd4e4",
+
+  "headline": "#2a1338",
+  "sub": "#3d2050",
+
+  "amber": "#f2ac13",
+
+  "_logo": "Sampled from assets/logo.png: its own purple is #8b03bf, repainted to `folder` on generation so the icon and the app agree. Its cream is #fcdec3 and its wine #75092c — recorded here because they are the mark's other two colours, not because the UI uses them yet."
+}

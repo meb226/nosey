@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { useWakeLock } from '@/lib/useWakeLock'
 import { WordInput } from '@/components/WordInput'
 import { InfoTag } from '@/components/InfoTag'
-import { AXES } from '@/lib/axes'
+import { AXES, AXIS_BY_KEY } from '@/lib/axes'
 import { AXIS_INFO, WORD_INFO } from '@/lib/axisInfo'
 import type { Bottle } from '@/lib/types'
+import palette from '@/palette.json'
 
 type Levels = Record<string, string | undefined>
 
@@ -58,7 +59,7 @@ function Pips({ index, total, selected }: { index: number; total: number; select
           style={{
             height: `${5 + Math.round((k / (total - 1)) * 9)}px`,
             background:
-              k <= index ? '#241a2b' : selected ? 'rgba(36,26,43,0.3)' : '#ddd4e4',
+              k <= index ? palette.ink : selected ? 'rgba(36,26,43,0.3)' : palette.hairline,
           }}
         />
       ))}
@@ -302,7 +303,7 @@ export function TasteForm({
                                 type="button"
                                 aria-pressed={buyAgain === yes}
                                 className="opt flex-1 justify-center"
-                                style={buyAgain === yes ? { background: '#6fd3ab' } : undefined}
+                                style={buyAgain === yes ? { background: AXIS_BY_KEY.acidity.fill } : undefined}
                                 onClick={() => setBuyAgain(buyAgain === yes ? null : yes)}
                               >
                                 {yes ? 'Yes' : 'No'}

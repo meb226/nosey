@@ -55,3 +55,8 @@ export const AXES: Axis[] = [
 
 /** The order the accordion advances through. */
 export const AXIS_KEYS = AXES.map((a) => a.key)
+
+/** Lookup by key, so a colour is never written out a second time by hand. */
+export const AXIS_BY_KEY: Record<string, Axis> = Object.fromEntries(
+  AXES.map((a) => [a.key, a]),
+)

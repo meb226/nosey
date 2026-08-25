@@ -2,7 +2,7 @@
   "pages": [
     {
       "id": "page-5",
-      "name": "Light purple + screens"
+      "name": "F2CCFF"
     },
     {
       "id": "page-4",
@@ -23,8 +23,8 @@
   ],
   "artboards": [
     {
-      "file": "TasteAmethyst.dc.html",
-      "title": "Amethyst",
+      "file": "TasteLilac.dc.html",
+      "title": "F2CCFF",
       "page": "page-5",
       "x": 0,
       "y": 0,
@@ -32,19 +32,10 @@
       "h": 960
     },
     {
-      "file": "TasteOrchid.dc.html",
-      "title": "Orchid",
+      "file": "TasteLilacDeep.dc.html",
+      "title": "One step down",
       "page": "page-5",
       "x": 470,
-      "y": 0,
-      "w": 375,
-      "h": 960
-    },
-    {
-      "file": "TastePeriwinkle.dc.html",
-      "title": "Periwinkle",
-      "page": "page-5",
-      "x": 940,
       "y": 0,
       "w": 375,
       "h": 960
@@ -216,10 +207,10 @@
     {
       "id": "note-purple",
       "x": 0,
-      "y": -262,
-      "w": 1315,
+      "y": -280,
+      "w": 845,
       "page": "page-5",
-      "text": "LIGHTER AND MORE SATURATED. Epilogue, clean treatment, same layout.\n\nThe change that makes these read light rather than merely pale is the type going DARK on the ground. At this lightness a cream headline drops under 4:1; ink on saturated purple holds 4.6:1 and looks deliberate. The sub-line shares the headline's ink and separates by size and weight rather than colour, so it stays legible too.\n\nThe primary button went ink as well — amber on light purple was two mid-tones fighting, and the favourite star needs the amber more than the button does. Cards are now near-white against colour, which is what the firm 2px borders were always for."
+      "text": "#F2CCFF, AS ASKED — and one step down beside it.\n\nA ground this pale changed what the cards had to do. A near-white card would have been invisible against it, so rather than fight that: a COLLAPSED row is now transparent and an OPEN row is white. Opening a row visibly lifts it off the ground, and the pale colour becomes part of the mechanism instead of a backdrop behind it. The 2px borders hold the structure either way.\n\nThe ink picked up a purple cast so it sits in the same family as the ground rather than on top of it. 11.5:1, so every size is comfortable.\n\nAnd the saturated chips finally have the pale field they wanted — this is the loudest they have looked."
     },
     {
       "id": "note-grape",
@@ -227,7 +218,7 @@
       "y": 1008,
       "w": 375,
       "page": "page-5",
-      "text": "AMETHYST — bright violet.\n\nThe straightforward answer to lighter and more saturated. Closest to what you have been looking at, just lifted.\n\nTradeoff: nearest in hue to tannin's chip, so that one square works hardest."
+      "text": "F2CCFF — exactly the value you gave.\n\nAiry, and the chips sing against it. But two things worth weighing against your own earlier calls.\n\nIt is LIGHTER than Apricot, which you passed on partly because a light screen at a dim table is a torch. And it reads sweeter than the \"touch more serious\" you asked for a few rounds back. Neither is a veto — just the same objections, applied consistently."
     },
     {
       "id": "note-mulberry",
@@ -235,15 +226,7 @@
       "y": 1008,
       "w": 375,
       "page": "page-5",
-      "text": "ORCHID — magenta-purple.\n\nWarmest and the most clearly distinct from every axis chip, tannin included. If you want the colour coding to stay legible, this is the safest.\n\nTradeoff: the furthest from purple proper — closer to a pink at a glance."
-    },
-    {
-      "id": "note-damson",
-      "x": 940,
-      "y": 1008,
-      "w": 375,
-      "page": "page-5",
-      "text": "PERIWINKLE — blue-violet.\n\nCoolest and the most modern of the three. The cream cards sit best on this one.\n\nTradeoff: it is the least wine-ish reading of purple."
+      "text": "ONE STEP DOWN — #DFA3F5, the same hue with the saturation carried further and the lightness pulled back.\n\nKeeps the airiness and most of the pop, loses some of the pastel sweetness. Cards read more clearly against it.\n\nHere in case F2CCFF turns out to be a shade past where you wanted to land — not a counter-proposal."
     },
     {
       "id": "note-home",

@@ -2,13 +2,13 @@ import { writeFile } from 'node:fs/promises'
 
 /** Home, intake and cellar, in Epilogue on Grape. They inherit whichever purple wins. */
 const P = {
-  ground: '#9d6ee8', groundTop: '#ac82ee',
-  headline: '#211d26', sub: '#211d26',
-  badgeBg: '#211d26', badgeFg: '#f6f2ea',
-  card: '#f7f4ef', cardOpen: '#ffffff',
-  ink: '#211d26', muted: '#7d7686', empty: '#b4aec0', hairline: '#e4ddd2',
-  star: '#f2ac13', save: '#211d26', saveFg: '#f6f2ea',
-  swatches: ['#9d6ee8', '#b46ad6', '#8a7cf5', '#6042a8'],
+  ground: '#f2ccff', groundTop: '#f8e2ff',
+  headline: '#241a2b', sub: '#241a2b',
+  badgeBg: '#241a2b', badgeFg: '#f8e2ff',
+  card: '#ffffff', cardOpen: '#ffffff',
+  ink: '#241a2b', muted: '#7a6f85', empty: '#b8aec2', hairline: '#e3dae8',
+  star: '#f2ac13', save: '#241a2b', saveFg: '#f8e2ff',
+  swatches: ['#f2ccff', '#dfa3f5', '#9d6ee8', '#b46ad6'],
 }
 const CHIPS = ['#2f88db', '#f2ac13', '#16b070', '#7c4ceb', '#ec6a2e', '#f2497e', '#c53fb5']
 

@@ -21,25 +21,24 @@ const HUES = {
 }
 
 const BASE = {
-  // Dark type on the ground, not cream: at this lightness a cream headline
-  // drops under 4:1, and ink on saturated purple is what makes it read light
-  // rather than merely pale. Sub-text shares the headline's ink and separates
-  // by size and weight instead of by colour, which keeps it at 4.6:1.
-  headline: '#211d26', sub: '#211d26',
-  badgeBg: '#211d26', badgeFg: '#f6f2ea',
-  card: '#f7f4ef', cardOpen: '#ffffff',
-  ink: '#211d26', muted: '#7d7686', empty: '#b4aec0', hairline: '#e4ddd2',
-  star: '#f2ac13',
-  // The primary button goes ink on a light ground — amber on light purple is
-  // two mid-tones fighting, and the star needs the amber more than this does.
-  save: '#211d26', saveFg: '#f6f2ea',
-  swatches: ['#9d6ee8', '#b46ad6', '#8a7cf5', '#6042a8'],
+  // Ink with a purple cast rather than neutral black — it sits in the same
+  // family as the ground instead of on top of it. 11.5:1 on this pale a
+  // background, so every size and weight is comfortable.
+  headline: '#241a2b', sub: '#241a2b',
+  badgeBg: '#241a2b', badgeFg: '#f8e2ff',
+  // A collapsed row is TRANSPARENT and an open one is white. On a ground this
+  // pale, a near-white card would have been invisible against it — so instead
+  // of fighting that, opening a row visibly lifts it off the ground. The pale
+  // ground becomes part of the mechanism rather than a backdrop behind it.
+  card: 'transparent', cardOpen: '#ffffff',
+  ink: '#241a2b', muted: '#7a6f85', empty: '#b8aec2', hairline: '#e3dae8',
+  star: '#f2ac13', save: '#241a2b', saveFg: '#f8e2ff',
+  swatches: ['#f2ccff', '#dfa3f5', '#9d6ee8', '#b46ad6'],
 }
 
 const PURPLES = {
-  Amethyst:   { ...BASE, ground: '#9d6ee8', groundTop: '#ac82ee' },
-  Orchid:     { ...BASE, ground: '#b46ad6', groundTop: '#c17fde' },
-  Periwinkle: { ...BASE, ground: '#8a7cf5', groundTop: '#9b8ff8' },
+  Lilac:     { ...BASE, ground: '#f2ccff', groundTop: '#f8e2ff' },
+  LilacDeep: { ...BASE, ground: '#dfa3f5', groundTop: '#e9bcf9' },
 }
 
 const FONT = {

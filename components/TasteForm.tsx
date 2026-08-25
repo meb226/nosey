@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWakeLock } from '@/lib/useWakeLock'
 import { WordInput } from '@/components/WordInput'
+import { InfoTag } from '@/components/InfoTag'
+import { AXIS_INFO, WORD_INFO } from '@/lib/axisInfo'
 import { LEVELS, SWEETNESS, FINISH } from '@/lib/types'
 import type { Bottle } from '@/lib/types'
 
@@ -24,18 +26,23 @@ type Values = Record<string, string | undefined>
 
 function Axis({
   label,
+  info,
   options,
   value,
   onPick,
 }: {
   label: string
+  info: string
   options: readonly string[]
   value: string | undefined
   onPick: (v: string) => void
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[13px] uppercase tracking-wide text-muted">{label}</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[13px] uppercase tracking-wide text-muted">{label}</span>
+        <InfoTag label={label} text={info} />
+      </div>
       <div className="flex gap-1.5">
         {options.map((o) => (
           <button
@@ -121,7 +128,7 @@ export function TasteForm({
   }
 
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-6 px-6 py-10">
+    <main className="mx-auto flex max-w-sm flex-col gap-6 px-6 pb-4 pt-10">
       <header>
         <div className="text-[13px] uppercase tracking-wide text-muted">
           Bottle {index + 1} of {bottles.length}
@@ -137,10 +144,15 @@ export function TasteForm({
       <section className="flex flex-col gap-3">
         <Axis
           label="Nose intensity"
+          info={AXIS_INFO.nose_intensity}
           options={LEVELS}
           value={values.nose_intensity}
           onPick={(v) => setValues({ ...values, nose_intensity: v })}
         />
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[13px] uppercase tracking-wide text-muted">Nose</span>
+          <InfoTag label="the nose words" text={WORD_INFO} />
+        </div>
         <WordInput words={noseWords} onChange={setNoseWords} placeholder="What do you smell?" />
       </section>
 
@@ -149,6 +161,7 @@ export function TasteForm({
           <Axis
             key={a.key}
             label={a.label}
+            info={AXIS_INFO[a.key]}
             options={a.options}
             value={values[a.key]}
             onPick={(v) => setValues({ ...values, [a.key]: v })}
@@ -157,7 +170,10 @@ export function TasteForm({
       </section>
 
       <section className="flex flex-col gap-3 border-t border-line pt-5">
-        <span className="text-[13px] uppercase tracking-wide text-muted">Palate</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[13px] uppercase tracking-wide text-muted">Palate</span>
+          <InfoTag label="the palate words" text={WORD_INFO} />
+        </div>
         <WordInput
           words={palateWords}
           onChange={setPalateWords}
@@ -185,10 +201,18 @@ export function TasteForm({
         />
       </label>
 
-      {/* Sits above the home indicator; env() padding is on body. */}
-      <button className="btn sticky bottom-4" onClick={save} disabled={saving}>
-        {saving ? 'Saving…' : last ? 'Save and see what it was' : 'Save and pour the next'}
-      </button>
+      {/*
+        A docked action bar, not a floating button: it is opaque and would
+        otherwise sit on top of whichever axis happened to be behind it. The
+        paper backdrop and the -mx-6 bleed make it read as the bottom of the
+        screen. env(safe-area-inset-bottom) padding is on body, so this clears
+        the home indicator in standalone.
+      */}
+      <div className="sticky bottom-0 -mx-6 mt-2 bg-paper px-6 pb-3 pt-3">
+        <button className="btn" onClick={save} disabled={saving}>
+          {saving ? 'Saving…' : last ? 'Save and see what it was' : 'Save and pour the next'}
+        </button>
+      </div>
     </main>
   )
 }

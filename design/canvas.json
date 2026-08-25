@@ -1,61 +1,205 @@
 {
   "pages": [
-    { "id": "page-3", "name": "Vine — type & cellar" },
-    { "id": "page-2", "name": "Ground colour" },
-    { "id": "page-1", "name": "Directions" }
+    {
+      "id": "page-3",
+      "name": "Vine — type & cellar"
+    },
+    {
+      "id": "page-2",
+      "name": "Ground colour"
+    },
+    {
+      "id": "page-1",
+      "name": "Directions"
+    }
   ],
   "artboards": [
-    { "file": "TypeBricolage.dc.html", "title": "Bricolage Grotesque", "page": "page-3", "x": 0, "y": 0, "w": 375, "h": 960 },
-    { "file": "TypeGabarito.dc.html", "title": "Gabarito", "page": "page-3", "x": 470, "y": 0, "w": 375, "h": 960 },
-    { "file": "TypeZilla.dc.html", "title": "Zilla Slab", "page": "page-3", "x": 940, "y": 0, "w": 375, "h": 960 },
-    { "file": "MyCellar.dc.html", "title": "My cellar", "page": "page-3", "x": 1470, "y": 0, "w": 375, "h": 960 },
-
-    { "file": "Vine.dc.html", "title": "Vine — picked", "page": "page-2", "x": 0, "y": 0, "w": 375, "h": 940 },
-    { "file": "Cask.dc.html", "title": "Cask", "page": "page-2", "x": 470, "y": 0, "w": 375, "h": 940 },
-    { "file": "Apricot.dc.html", "title": "Apricot", "page": "page-2", "x": 940, "y": 0, "w": 375, "h": 940 },
-    { "file": "AnythingElse.dc.html", "title": "Anything else — the last step", "page": "page-2", "x": 1410, "y": 0, "w": 375, "h": 940 },
-
-    { "file": "Main.dc.html", "title": "Accordion — structure only", "page": "page-1", "x": 0, "y": 0, "w": 375, "h": 880 },
-    { "file": "DarkCellar.dc.html", "title": "Cellar (dark) — not taken forward", "page": "page-1", "x": 470, "y": 0, "w": 375, "h": 880 },
-    { "file": "Label.dc.html", "title": "Label — not taken forward", "page": "page-1", "x": 940, "y": 0, "w": 375, "h": 880 },
-    { "file": "Toybox.dc.html", "title": "Toybox — as first shown", "page": "page-1", "x": 1410, "y": 0, "w": 375, "h": 880 }
+    {
+      "file": "Fonts.dc.html",
+      "title": "Ten faces",
+      "page": "page-3",
+      "x": -470,
+      "y": 0,
+      "w": 375,
+      "h": 1400
+    },
+    {
+      "file": "TypeBricolage.dc.html",
+      "title": "Bricolage Grotesque",
+      "page": "page-3",
+      "x": 0,
+      "y": 0,
+      "w": 375,
+      "h": 960
+    },
+    {
+      "file": "TypeGabarito.dc.html",
+      "title": "Gabarito",
+      "page": "page-3",
+      "x": 470,
+      "y": 0,
+      "w": 375,
+      "h": 960
+    },
+    {
+      "file": "TypeZilla.dc.html",
+      "title": "Zilla Slab",
+      "page": "page-3",
+      "x": 940,
+      "y": 0,
+      "w": 375,
+      "h": 960
+    },
+    {
+      "file": "MyCellar.dc.html",
+      "title": "My cellar",
+      "page": "page-3",
+      "x": 1470,
+      "y": 0,
+      "w": 375,
+      "h": 960
+    },
+    {
+      "file": "Vine.dc.html",
+      "title": "Vine — picked",
+      "page": "page-2",
+      "x": 0,
+      "y": 0,
+      "w": 375,
+      "h": 940
+    },
+    {
+      "file": "Cask.dc.html",
+      "title": "Cask",
+      "page": "page-2",
+      "x": 470,
+      "y": 0,
+      "w": 375,
+      "h": 940
+    },
+    {
+      "file": "Apricot.dc.html",
+      "title": "Apricot",
+      "page": "page-2",
+      "x": 940,
+      "y": 0,
+      "w": 375,
+      "h": 940
+    },
+    {
+      "file": "AnythingElse.dc.html",
+      "title": "Anything else — the last step",
+      "page": "page-2",
+      "x": 1410,
+      "y": 0,
+      "w": 375,
+      "h": 940
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Accordion — structure only",
+      "page": "page-1",
+      "x": 0,
+      "y": 0,
+      "w": 375,
+      "h": 880
+    },
+    {
+      "file": "DarkCellar.dc.html",
+      "title": "Cellar (dark) — not taken forward",
+      "page": "page-1",
+      "x": 470,
+      "y": 0,
+      "w": 375,
+      "h": 880
+    },
+    {
+      "file": "Label.dc.html",
+      "title": "Label — not taken forward",
+      "page": "page-1",
+      "x": 940,
+      "y": 0,
+      "w": 375,
+      "h": 880
+    },
+    {
+      "file": "Toybox.dc.html",
+      "title": "Toybox — as first shown",
+      "page": "page-1",
+      "x": 1410,
+      "y": 0,
+      "w": 375,
+      "h": 880
+    }
   ],
   "annotations": [
     {
+      "id": "note-fonts",
+      "x": -470,
+      "y": 1448,
+      "w": 375,
+      "page": "page-3",
+      "text": "TEN FACES — each at the size it would actually run at.\n\nAll ten are on Google Fonts, which is the only font host the artifact can reach, and all ten carry the 600-800 weights this design leans on. Tap one to mark it.\n\nSeven sans, two slabs, one screen serif. My picks are called out in the reply."
+    },
+    {
       "id": "note-type",
-      "x": 0, "y": -230, "w": 1315, "page": "page-3",
+      "x": 0,
+      "y": -230,
+      "w": 1315,
+      "page": "page-3",
       "text": "VINE, SETTLED. Type is the open question.\n\nThe accordion scale went up in all three: row labels 13px to 15px, values 16px to 18px, options 16px to 17px, rows 52px to 54px. That is the \"bigger\" change, independent of which face wins — it reads at arm's length on a table now rather than at reading distance.\n\nAll three are the same layout and the same palette. Only the typeface differs."
     },
     {
       "id": "note-bricolage",
-      "x": 0, "y": 1008, "w": 375, "page": "page-3",
+      "x": 0,
+      "y": 1008,
+      "w": 375,
+      "page": "page-3",
       "text": "BRICOLAGE GROTESQUE — what you have been looking at.\n\nVariable, slightly irregular, the most characterful of the three. The tight letterspacing on the bottle name is doing a lot of the playful work.\n\nTradeoff: the irregularity that makes it fun also makes it the least quiet at 15px, row after row."
     },
     {
       "id": "note-gabarito",
-      "x": 470, "y": 1008, "w": 375, "page": "page-3",
+      "x": 470,
+      "y": 1008,
+      "w": 375,
+      "page": "page-3",
       "text": "GABARITO — rounder, more open.\n\nWider apertures and a taller x-height, so it holds up better in a dim room and at a glance. Friendly without being a toy face. Heavier top weight, so the bottle name still lands.\n\nTradeoff: more conventional. You lose some of the oddness that made Toybox feel like Toybox."
     },
     {
       "id": "note-zilla",
-      "x": 940, "y": 1008, "w": 375, "page": "page-3",
+      "x": 940,
+      "y": 1008,
+      "w": 375,
+      "page": "page-3",
       "text": "ZILLA SLAB — slab serif throughout.\n\nThe serifs add the seriousness you asked for two rounds ago without touching the colour, and slabs suit wine lists. Row weight drops to 600 because the serifs already carry weight.\n\nTradeoff: the most opinionated. Either it reads as confident or it reads as a coffee shop menu."
     },
     {
       "id": "note-cellar",
-      "x": 1470, "y": 1008, "w": 375, "page": "page-3",
+      "x": 1470,
+      "y": 1008,
+      "w": 375,
+      "page": "page-3",
       "text": "MY CELLAR — retrieve and review.\n\nSearch across grape, region and your own words. Filter chips for favourites and grape. Each bottle carries a coloured spine — same hue family as the axis chips — so the shelf is scannable by grape before you read a word.\n\nCards show the score, the star, and your takeaway, because the takeaway is the bit worth re-reading. Tapping one opens that session's explanation.\n\nShown in Bricolage; it inherits whichever face wins."
     },
     {
       "id": "note-ground",
-      "x": 0, "y": -160, "w": 810, "page": "page-2",
+      "x": 0,
+      "y": -160,
+      "w": 810,
+      "page": "page-2",
       "text": "GROUND COLOUR — settled on Vine. Kept as the record.\n\nThe last artboard is the free-entry step that score and takeaway moved into."
     },
     {
       "id": "note-directions",
-      "x": 0, "y": -160, "w": 810, "page": "page-1",
+      "x": 0,
+      "y": -160,
+      "w": 810,
+      "page": "page-1",
       "text": "THE ORIGINAL FOUR — kept as the record of the decision. Toybox was picked from these."
     }
   ],
-  "launch": { "view": "canvas", "page": "page-3" }
+  "launch": {
+    "view": "canvas",
+    "page": "page-3"
+  }
 }

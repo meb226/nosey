@@ -47,6 +47,31 @@ Generate the cookie secret with:
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
+## The home-screen icon
+
+Drop a logo at `assets/logo.svg` (or `.png`) and run:
+
+```bash
+npm run icons
+```
+
+It writes `app/apple-icon.png`, `app/icon.png` and the manifest sizes under
+`public/`. Pass a path to use a file somewhere else: `npm run icons -- ~/logo.svg`.
+
+Three iOS facts the script exists to handle, all of which bite silently:
+
+- **The apple icon must be opaque.** iOS composites transparency onto black, so
+  a transparent logo lands on the home screen in a black box. Every output is
+  flattened onto the ground colour.
+- **Do not pre-round the corners.** iOS applies its own superellipse mask. A
+  logo that already has rounded corners gets rounded twice and reads as inset
+  and slightly wrong. Supply a full-bleed square.
+- **iOS uses `apple-icon.png` for the home screen, not the manifest icons.** The
+  manifest entries are for Android and desktop. Both get generated. Android's
+  maskable icon carries extra padding because the launcher crops it to a circle.
+
+The current icon is a drawn placeholder, not a real mark.
+
 ## Installing on a phone
 
 iOS has no install prompt — Safari doesn't implement `beforeinstallprompt`, so

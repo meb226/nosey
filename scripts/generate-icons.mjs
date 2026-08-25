@@ -54,14 +54,37 @@ async function exists(p) {
   }
 }
 
+function flag(name) {
+  const i = process.argv.indexOf(`--${name}`)
+  return i === -1 ? null : process.argv[i + 1]
+}
+
+/**
+ * A supplied logo usually carries its own full-bleed background, so padding it
+ * with the app's ground colour would draw a border around it. Sampling the
+ * source's own corner pixel makes any letterboxing invisible instead.
+ */
+async function sampleCorner(src) {
+  const { data } = await sharp(src)
+    .extract({ left: 0, top: 0, width: 1, height: 1 })
+    .flatten({ background: GROUND })
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+  const hex = (n) => n.toString(16).padStart(2, '0')
+  return `#${hex(data[0])}${hex(data[1])}${hex(data[2])}`
+}
+
 async function findSource() {
-  const arg = process.argv[2]
+  const arg = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : null
   if (arg) {
     if (!(await exists(arg))) {
       console.error(`no such file: ${arg}`)
       process.exit(1)
     }
     return arg
+  }
+  for (const p of ['assets/logo.png', 'assets/logo.jpg']) {
+    if (await exists(p)) return p
   }
   for (const p of ['assets/logo.svg', 'assets/logo.png', 'assets/logo.jpg']) {
     if (await exists(p)) return p
@@ -72,11 +95,20 @@ async function findSource() {
 const source = await findSource()
 const input = source ?? Buffer.from(FALLBACK)
 
+// A supplied logo is treated as full-bleed unless told otherwise; the drawn
+// fallback is a floating mark and wants breathing room.
+const BG = flag('bg') ?? (source ? await sampleCorner(source) : GROUND)
+const INSET = flag('inset') != null ? Number(flag('inset')) : source ? 0 : 0.1
+
 if (source) {
   const meta = await sharp(source).metadata()
   console.log(`source: ${basename(source)} (${meta.width}×${meta.height}${meta.hasAlpha ? ', has alpha' : ''})`)
+  console.log(`  background sampled from its top-left pixel: ${BG}`)
+  if (BG.toLowerCase() !== FOLDER.toLowerCase()) {
+    console.log(`  note: the app's folder purple is ${FOLDER} — the icon does not have to match, but they will sit near each other on the home screen`)
+  }
   if (meta.hasAlpha) {
-    console.log(`  transparency will be flattened onto ${GROUND} — iOS would use black otherwise`)
+    console.log(`  transparency will be flattened onto ${BG} — iOS would use black otherwise`)
   }
   if (meta.width && meta.height && meta.width !== meta.height) {
     console.log('  not square: it will be letterboxed onto the ground colour rather than cropped')
@@ -94,13 +126,13 @@ async function render(out, size, inset) {
   const art = Math.round(size * (1 - inset * 2))
   const pad = Math.round((size - art) / 2)
   const resized = await sharp(input)
-    .resize(art, art, { fit: 'contain', background: GROUND })
+    .resize(art, art, { fit: 'contain', background: BG })
     .toBuffer()
   await sharp({
-    create: { width: size, height: size, channels: 4, background: GROUND },
+    create: { width: size, height: size, channels: 4, background: BG },
   })
     .composite([{ input: resized, top: pad, left: pad }])
-    .flatten({ background: GROUND })
+    .flatten({ background: BG })
     .png()
     .toFile(out)
   console.log(`  ${out} (${size}×${size})`)
@@ -109,13 +141,15 @@ async function render(out, size, inset) {
 await mkdir('public', { recursive: true })
 
 // iOS home screen. 180px is what Safari asks for.
-await render('app/apple-icon.png', 180, 0.1)
+await render('app/apple-icon.png', 180, INSET)
 // Browser tab and the manifest's any-purpose entries.
-await render('app/icon.png', 512, 0.1)
-await render('public/icon-192.png', 192, 0.1)
-await render('public/icon-512.png', 512, 0.1)
+await render('app/icon.png', 512, INSET)
+await render('public/icon-192.png', 192, INSET)
+await render('public/icon-512.png', 512, INSET)
 // Android maskable: more padding, because the launcher crops to a circle.
-await render('public/icon-maskable-512.png', 512, 0.2)
+// Android crops to a circle, so this one always keeps a margin — filled with
+// the sampled background, which makes it read as part of the artwork.
+await render('public/icon-maskable-512.png', 512, Math.max(INSET, 0.18))
 
 if (!source) await writeFile('public/icon.svg', FALLBACK)
 

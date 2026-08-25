@@ -26,13 +26,13 @@ export async function POST(req: Request) {
     insert into notes (
       bottle_id, taster, nose_intensity, sweetness, acidity, tannin, body,
       alcohol, finish, nose_words, palate_words, score, buy_again, drink_with,
-      takeaway
+      favourite, takeaway
     ) values (
       ${n.bottle_id}, ${taster}, ${n.nose_intensity ?? null}, ${n.sweetness ?? null},
       ${n.acidity ?? null}, ${n.tannin ?? null}, ${n.body ?? null},
       ${n.alcohol ?? null}, ${n.finish ?? null}, ${n.nose_words ?? []},
       ${n.palate_words ?? []}, ${n.score ?? null}, ${n.buy_again ?? null},
-      ${n.drink_with ?? null}, ${n.takeaway ?? null}
+      ${n.drink_with ?? null}, ${n.favourite ?? false}, ${n.takeaway ?? null}
     )
     on conflict (bottle_id, taster) do update set
       nose_intensity = excluded.nose_intensity,
@@ -47,6 +47,7 @@ export async function POST(req: Request) {
       score          = excluded.score,
       buy_again      = excluded.buy_again,
       drink_with     = excluded.drink_with,
+      favourite      = excluded.favourite,
       takeaway       = excluded.takeaway
     returning id
   `) as { id: string }[]

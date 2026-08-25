@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; }
+    a { color: #7b4bc4; } a:hover { color: #5f34a0; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 880px; background: #fff6e5; color: #241f1a; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 28px 20px 12px;">
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <span style="align-self: flex-start; transform: rotate(-2.5deg); background: #241f1a; color: #ffd84d; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;">Bottle 1 of 2</span>
+      <h1 style="margin: 0; font-size: 33px; font-weight: 800; line-height: 0.98; letter-spacing: -0.03em; text-wrap: pretty;">Clos des Briords</h1>
+      <span style="font-size: 14px; font-weight: 500; color: #6d6156;">Muscadet Sèvre et Maine · 2022</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+        <div style="border-radius: 16px; border: 2.5px solid #241f1a; overflow: hidden; background: {{row.shellBg}}; box-shadow: {{row.shellShadow}};">
+
+          <button onClick="{{row.toggle}}" style="width: 100%; min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 13px; background: none; border: none; text-align: left;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 13px; height: 13px; border-radius: 5px; border: 2.5px solid #241f1a; background: {{row.hue}};"></span>
+              <span style="font-size: 13px; font-weight: 700; letter-spacing: -0.01em;">{{row.label}}</span>
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 999px; border: 2px solid #241f1a; font-size: 10px; font-weight: 800;">i</span>
+            </span>
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 16px; font-weight: 700; color: {{row.valueColor}};">{{row.valueText}}</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#241f1a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="transform: {{row.caret}};">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <sc-if value="{{row.isOpen}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 2px 13px 15px;">
+              <sc-for list="{{row.options}}" as="opt" hint-placeholder-count="5">
+                <button onClick="{{opt.pick}}" style="width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border-radius: 12px; border: 2.5px solid #241f1a; font-size: 16px; font-weight: 600; background: {{opt.bg}}; color: #241f1a; box-shadow: {{opt.shadow}}; transform: {{opt.lift}};">
+                  <span>{{opt.label}}</span>
+                  <span style="display: flex; gap: 3px; align-items: flex-end; height: 15px;">
+                    <sc-for list="{{opt.pips}}" as="pip" hint-placeholder-count="5">
+                      <span style="width: 4px; border-radius: 2px; background: {{pip.color}}; height: {{pip.h}};"></span>
+                    </sc-for>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="padding: 12px 20px 20px;">
+    <button style="width: 100%; min-height: 54px; border-radius: 14px; border: 2.5px solid #241f1a; background: #ffd84d; color: #241f1a; font-size: 17px; font-weight: 800; box-shadow: 0 4px 0 0 #241f1a;">Save and pour the next</button>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"lively":{"editor":"boolean","default":true,"section":"Theme"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: 'acidity',
+      picked: { nose_intensity: 'medium+', sweetness: 'dry' },
+    };
+  }
+
+  axes() {
+    const L = ['low', 'medium-', 'medium', 'medium+', 'high'];
+    // One hue per axis, held at a similar chroma and lightness so they read as
+    // a family. The point is recognition: tannin becomes "the purple one".
+    return [
+      { key: 'nose_intensity', label: 'Nose intensity', hue: '#3b8fd4', options: L },
+      { key: 'sweetness', label: 'Sweetness', hue: '#e8a020', options: ['bone dry', 'dry', 'off-dry', 'medium sweet', 'sweet'] },
+      { key: 'acidity', label: 'Acidity', hue: '#3f9e6b', options: L },
+      { key: 'tannin', label: 'Tannin', hue: '#7b4bc4', options: L },
+      { key: 'body', label: 'Body', hue: '#d4643c', options: L },
+      { key: 'alcohol', label: 'Alcohol', hue: '#e04b7a', options: L },
+      { key: 'finish', label: 'Finish', hue: '#a03a8f', options: ['short', 'medium', 'long'] },
+    ];
+  }
+
+  renderVals() {
+    const axes = this.axes();
+    const lively = this.props.lively ?? true;
+    const open = this.state.open;
+
+    const rows = axes.map((a, i) => {
+      const value = this.state.picked[a.key] ?? null;
+      const isOpen = open === a.key;
+      const tint = lively ? a.hue : '#c9bfae';
+      return {
+        label: a.label,
+        hue: tint,
+        isOpen: isOpen,
+        valueText: value ?? '',
+        valueColor: value ? '#241f1a' : '#b5a897',
+        shellBg: isOpen ? '#ffffff' : '#fffdf7',
+        shellShadow: isOpen ? '0 4px 0 0 #241f1a' : '0 2px 0 0 #241f1a',
+        caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: isOpen ? '' : a.key }),
+        options: a.options.map((o, j) => {
+          const on = value === o;
+          const total = a.options.length;
+          return {
+            label: o,
+            bg: on ? tint : '#ffffff',
+            // Selected sits down into the page; unselected stands proud.
+            shadow: on ? '0 1px 0 0 #241f1a' : '0 3px 0 0 #241f1a',
+            lift: on ? 'translateY(2px)' : 'translateY(0)',
+            pips: a.options.map((_, k) => ({
+              color: k <= j ? '#241f1a' : (on ? 'rgba(36,31,26,0.22)' : '#e2d9c8'),
+              h: String(5 + Math.round((k / (total - 1)) * 10)) + 'px',
+            })),
+            pick: () => {
+              const next = Object.assign({}, this.state.picked);
+              next[a.key] = o;
+              const following = axes[i + 1];
+              this.setState({ picked: next, open: following ? following.key : '' });
+            },
+          };
+        }),
+      };
+    });
+
+    return { rows: rows };
+  }
+}
+</script>
+</body>
+</html>

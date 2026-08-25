@@ -48,6 +48,12 @@ create table if not exists notes (
   buy_again      boolean,
   drink_with     text,
 
+  -- Per taster, not per bottle: everything else in this app is per taster,
+  -- and a shared favourite would need a rule for the case where one of you
+  -- loves it and the other doesn't. Distinct from buy_again on purpose —
+  -- buy_again is practical, favourite is memorable.
+  favourite      boolean not null default false,
+
   -- deferred blind mode. Stays null in v1; cannot be retrofitted later
   -- without losing every session recorded before the change.
   blind_guess    text,
@@ -86,3 +92,7 @@ create table if not exists flight_notes (
   created_at timestamptz not null default now(),
   primary key (session_id, taster)
 );
+
+-- Additive migrations. Kept idempotent so `npm run db:push` stays safe to
+-- re-run against a database created before the column existed.
+alter table notes add column if not exists favourite boolean not null default false;

@@ -16,6 +16,7 @@ type Row = {
   country: string | null
   vintage: number | null
   score: number | null
+  favourite: boolean
   takeaway: string | null
   created_at: string
 }
@@ -23,22 +24,24 @@ type Row = {
 export default async function Log({
   searchParams,
 }: {
-  searchParams: Promise<{ grape?: string; country?: string }>
+  searchParams: Promise<{ grape?: string; country?: string; fav?: string }>
 }) {
   const taster = await currentTaster()
   if (!taster) redirect('/')
 
-  const { grape, country } = await searchParams
+  const { grape, country, fav } = await searchParams
+  const onlyFavourites = fav === '1'
 
   const rows = (await sql`
     select b.id as bottle_id, b.session_id, s.number as session_number,
            b.producer, b.wine, b.grape, b.region, b.country, b.vintage,
-           n.score, n.takeaway, s.created_at
+           n.score, coalesce(n.favourite, false) as favourite, n.takeaway, s.created_at
     from bottles b
     join sessions s on s.id = b.session_id
     left join notes n on n.bottle_id = b.id and n.taster = ${taster}
     where (${grape ?? null}::text is null or b.grape = ${grape ?? null})
       and (${country ?? null}::text is null or b.country = ${country ?? null})
+      and (${onlyFavourites} = false or n.favourite = true)
     order by s.created_at desc, b.position
   `) as Row[]
 
@@ -47,6 +50,18 @@ export default async function Log({
   return (
     <main className="mx-auto flex max-w-sm flex-col gap-5 px-6 py-10">
       <h1 className="text-2xl font-semibold">The log</h1>
+
+      <div className="flex flex-wrap gap-1.5">
+        <Link
+          href={onlyFavourites ? '/log' : '/log?fav=1'}
+          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[15px] ${onlyFavourites ? 'border-wine bg-wine text-white' : 'border-line bg-white'}`}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" fill={onlyFavourites ? 'currentColor' : 'none'}>
+            <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9" />
+          </svg>
+          Favourites
+        </Link>
+      </div>
 
       {grapes.length > 1 && (
         <div className="flex flex-wrap gap-1.5">
@@ -70,7 +85,9 @@ export default async function Log({
 
       {rows.length === 0 && (
         <p className="text-[15px] text-muted">
-          Nothing yet. This gets genuinely useful once there&rsquo;s history.
+          {onlyFavourites
+            ? 'No favourites yet.'
+            : 'Nothing yet. This gets genuinely useful once there\u2019s history.'}
         </p>
       )}
 
@@ -84,7 +101,14 @@ export default async function Log({
             <span className="font-medium">
               {[r.producer, r.wine].filter(Boolean).join(' ') || 'Untitled'}
             </span>
-            {r.score != null && <span className="text-[15px] text-muted">{r.score}</span>}
+            <span className="flex flex-shrink-0 items-center gap-1.5">
+              {r.favourite && (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="text-wine">
+                  <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9" />
+                </svg>
+              )}
+              {r.score != null && <span className="text-[15px] text-muted">{r.score}</span>}
+            </span>
           </div>
           <div className="mt-0.5 text-[14px] text-muted">
             {[r.grape, r.region, r.vintage].filter(Boolean).join(' · ')}

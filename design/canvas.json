@@ -1,0 +1,65 @@
+{
+  "pages": [
+    { "id": "page-2", "name": "Toybox — brighter" },
+    { "id": "page-1", "name": "Directions" }
+  ],
+  "artboards": [
+    { "file": "Vine.dc.html", "title": "Vine", "page": "page-2", "x": 0, "y": 0, "w": 375, "h": 940 },
+    { "file": "Cask.dc.html", "title": "Cask", "page": "page-2", "x": 470, "y": 0, "w": 375, "h": 940 },
+    { "file": "Apricot.dc.html", "title": "Apricot", "page": "page-2", "x": 940, "y": 0, "w": 375, "h": 940 },
+    { "file": "AnythingElse.dc.html", "title": "Anything else — the last step", "page": "page-2", "x": 1410, "y": 0, "w": 375, "h": 940 },
+
+    { "file": "Main.dc.html", "title": "Accordion — structure only", "page": "page-1", "x": 0, "y": 0, "w": 375, "h": 880 },
+    { "file": "Cellar.dc.html", "title": "Cellar", "page": "page-1", "x": 470, "y": 0, "w": 375, "h": 880 },
+    { "file": "Label.dc.html", "title": "Label", "page": "page-1", "x": 940, "y": 0, "w": 375, "h": 880 },
+    { "file": "Toybox.dc.html", "title": "Toybox — as first shown", "page": "page-1", "x": 1410, "y": 0, "w": 375, "h": 880 }
+  ],
+  "annotations": [
+    {
+      "id": "note-brighter",
+      "x": 0, "y": -250, "w": 1285, "page": "page-2",
+      "text": "BRIGHTER — the grounds moved up in lightness and the seven hues dropped their dust. Every hue is still light enough to carry near-black text when it fills a selected option, so nothing got harder to read.\n\nTwo additions since last time. A FAVOURITE star sits top-right of the header, reachable at any point rather than buried in the last step — you usually know a bottle is a keeper the moment you taste it, not after you have scored it.\n\nAnd SCORE and the free text are now one final \"Anything else\" step at the bottom of the accordion, not an eighth axis. Its collapsed row shows the score, so you can see at a glance whether you finished the bottle off."
+    },
+    {
+      "id": "note-vine",
+      "x": 0, "y": 988, "w": 375, "page": "page-2",
+      "text": "VINE — bottle green, lifted.\n\nStill the colour the wine came in, but no longer a dark room. Cards read as paper on a painted table.\n\nTradeoff: green sits furthest from the hue family, so the coloured axis chips have the least kinship with the ground here."
+    },
+    {
+      "id": "note-cask",
+      "x": 470, "y": 988, "w": 375, "page": "page-2",
+      "text": "CASK — berry, lifted.\n\nThe warmest of the three and the one the hue family agrees with most — chips and ground share a temperature.\n\nTradeoff: it is now firmly pink-red. Cheerful, but it commits you to a strong colour on every screen."
+    },
+    {
+      "id": "note-apricot",
+      "x": 940, "y": 988, "w": 375, "page": "page-2",
+      "text": "APRICOT — sunnier.\n\nMore saturated than before rather than lighter, so it reads as brighter without going further towards white.\n\nTradeoff: still the one you would least want to hold up at a dim table."
+    },
+    {
+      "id": "note-anythingelse",
+      "x": 1410, "y": 988, "w": 375, "page": "page-2",
+      "text": "THE LAST STEP, open — shown in Cask, but it is identical in all three.\n\nScore is a stepper rather than a row of ten pills: ten targets across 375px would be 28px each, well under the 44px floor. Buy-it-again, what to drink it with, and the takeaway sit underneath.\n\nThe star here is ON, so you can see the favourite state."
+    },
+    {
+      "id": "note-structure",
+      "x": 0, "y": -196, "w": 375, "page": "page-1",
+      "text": "STRUCTURE ONLY — current palette.\n\nThe accordion on its own, so the layout change could be judged without the colour change confusing the vote."
+    },
+    {
+      "id": "note-cellar",
+      "x": 470, "y": -196, "w": 375, "page": "page-1",
+      "text": "CELLAR — dark, candlelit.\n\nNot taken forward."
+    },
+    {
+      "id": "note-label",
+      "x": 940, "y": -196, "w": 375, "page": "page-1",
+      "text": "LABEL — print, engraved.\n\nNot taken forward."
+    },
+    {
+      "id": "note-toybox",
+      "x": 1410, "y": -196, "w": 375, "page": "page-1",
+      "text": "TOYBOX — as first shown, and the one picked.\n\nKept unchanged as the reference the brighter set is measured against."
+    }
+  ],
+  "launch": { "view": "canvas", "page": "page-2" }
+}

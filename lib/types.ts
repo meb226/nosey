@@ -51,6 +51,7 @@ export type Note = {
   score: number | null
   buy_again: boolean | null
   drink_with: string | null
+  favourite: boolean
   blind_guess: string | null
   blind_correct: boolean | null
   takeaway: string | null

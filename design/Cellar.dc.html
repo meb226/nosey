@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap">
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    a { color: #e0a33e; } a:hover { color: #f0bb63; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 880px; background: radial-gradient(120% 70% at 50% 0%, #241c18 0%, #14100e 62%); color: #f4ece2; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 26px; padding: 32px 24px 12px;">
+
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+      <span style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #e0a33e;">Bottle 1 of 2</span>
+      <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 36px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; text-wrap: pretty;">Clos des Briords</h1>
+      <span style="font-size: 14px; color: #9b8d82;">Muscadet Sèvre et Maine · 2022</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+        <div style="border-radius: 12px; overflow: hidden; background: {{row.shellBg}}; border: 1px solid {{row.shellBc}};">
+
+          <button onClick="{{row.toggle}}" style="width: 100%; min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; background: none; border: none; text-align: left;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: {{row.labelColor}};">{{row.label}}</span>
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 999px; border: 1px solid #6a5a50; font-size: 10px; font-weight: 600; color: #9b8d82;">i</span>
+            </span>
+            <span style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 20px; color: {{row.valueColor}};">{{row.valueText}}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7d6d62" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: {{row.caret}};">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <sc-if value="{{row.isOpen}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 7px; padding: 2px 12px 14px;">
+              <sc-for list="{{row.options}}" as="opt" hint-placeholder-count="5">
+                <button onClick="{{opt.pick}}" style="width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 14px; border-radius: 9px; border: 1px solid; font-size: 16px; background: {{opt.bg}}; border-color: {{opt.bc}}; color: {{opt.fg}}; box-shadow: {{opt.glow}};">
+                  <span>{{opt.label}}</span>
+                  <span style="display: flex; gap: 3px; align-items: center;">
+                    <sc-for list="{{opt.pips}}" as="pip" hint-placeholder-count="5">
+                      <span style="width: 5px; height: 5px; border-radius: 999px; background: {{pip.color}};"></span>
+                    </sc-for>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="padding: 12px 24px 20px;">
+    <button style="width: 100%; min-height: 52px; border-radius: 12px; border: none; background: #e0a33e; color: #1b1410; font-size: 16px; font-weight: 600;">Save and pour the next</button>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","options":["#e0a33e","#d4675f","#b98cc4","#7fae86"],"default":"#e0a33e","section":"Theme"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: 'acidity',
+      picked: { nose_intensity: 'medium+', sweetness: 'dry' },
+    };
+  }
+
+  axes() {
+    const L = ['low', 'medium-', 'medium', 'medium+', 'high'];
+    return [
+      { key: 'nose_intensity', label: 'Nose intensity', options: L },
+      { key: 'sweetness', label: 'Sweetness', options: ['bone dry', 'dry', 'off-dry', 'medium sweet', 'sweet'] },
+      { key: 'acidity', label: 'Acidity', options: L },
+      { key: 'tannin', label: 'Tannin', options: L },
+      { key: 'body', label: 'Body', options: L },
+      { key: 'alcohol', label: 'Alcohol', options: L },
+      { key: 'finish', label: 'Finish', options: ['short', 'medium', 'long'] },
+    ];
+  }
+
+  renderVals() {
+    const axes = this.axes();
+    const accent = this.props.accent ?? '#e0a33e';
+    const open = this.state.open;
+
+    const rows = axes.map((a, i) => {
+      const value = this.state.picked[a.key] ?? null;
+      const isOpen = open === a.key;
+      return {
+        label: a.label,
+        isOpen: isOpen,
+        valueText: value ?? '',
+        valueColor: value ? accent : '#4d423b',
+        labelColor: isOpen ? accent : '#9b8d82',
+        shellBg: isOpen ? '#221b17' : 'rgba(255,255,255,0.02)',
+        shellBc: isOpen ? '#3b302a' : 'rgba(255,255,255,0.06)',
+        caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: isOpen ? '' : a.key }),
+        options: a.options.map((o, j) => {
+          const on = value === o;
+          return {
+            label: o,
+            bg: on ? accent : 'rgba(255,255,255,0.03)',
+            bc: on ? accent : 'rgba(255,255,255,0.09)',
+            fg: on ? '#1b1410' : '#e6dcd1',
+            // Selected options glow, the way a candle picks out one glass.
+            glow: on ? '0 0 22px -6px ' + accent : 'none',
+            pips: a.options.map((_, k) => ({
+              color: k <= j ? (on ? 'rgba(27,20,16,0.55)' : '#6a5a50') : (on ? 'rgba(27,20,16,0.18)' : '#332b26'),
+            })),
+            pick: () => {
+              const next = Object.assign({}, this.state.picked);
+              next[a.key] = o;
+              const following = axes[i + 1];
+              this.setState({ picked: next, open: following ? following.key : '' });
+            },
+          };
+        }),
+      };
+    });
+
+    return { rows: rows };
+  }
+}
+</script>
+</body>
+</html>

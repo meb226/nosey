@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    a { color: #5c1f33; } a:hover { color: #3d1322; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 880px; background: #f4efe6; color: #1f1d1a; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 24px; padding: 30px 26px 12px;">
+
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid #1f1d1a; padding-bottom: 7px;">
+        <span style="font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; font-weight: 600;">Bottle One</span>
+        <span style="font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #7d746a;">Of Two</span>
+      </div>
+      <h1 style="margin: 4px 0 0; font-family: Newsreader, Georgia, serif; font-size: 34px; font-weight: 400; line-height: 1.02; letter-spacing: -0.015em; text-wrap: pretty;">Clos des<br>Briords</h1>
+      <span style="font-family: Newsreader, Georgia, serif; font-style: italic; font-size: 16px; color: #5c1f33;">Muscadet Sèvre et Maine, 2022</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column;">
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+        <div style="border-top: 1px solid #d6cdbe;">
+
+          <button onClick="{{row.toggle}}" style="width: 100%; min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; background: none; border: none; text-align: left;">
+            <span style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-family: Newsreader, Georgia, serif; font-size: 13px; color: #a89c8c; min-width: 18px;">{{row.num}}</span>
+              <span style="font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; color: {{row.labelColor}};">{{row.label}}</span>
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 999px; border: 1px solid #b3a795; font-size: 9px; font-weight: 700; color: #7d746a;">i</span>
+            </span>
+            <span style="display: flex; align-items: baseline; gap: 9px;">
+              <span style="font-family: Newsreader, Georgia, serif; font-style: italic; font-size: 20px; color: {{row.valueColor}};">{{row.valueText}}</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a89c8c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: {{row.caret}};">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <sc-if value="{{row.isOpen}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 0; padding: 0 0 16px 28px;">
+              <sc-for list="{{row.options}}" as="opt" hint-placeholder-count="5">
+                <button onClick="{{opt.pick}}" style="width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 14px; border: none; border-left: 3px solid; font-family: Newsreader, Georgia, serif; font-size: 19px; text-align: left; background: {{opt.bg}}; border-left-color: {{opt.bc}}; color: {{opt.fg}}; font-style: {{opt.italic}};">
+                  <span>{{opt.label}}</span>
+                  <span style="display: flex; gap: 4px; align-items: center;">
+                    <sc-for list="{{opt.pips}}" as="pip" hint-placeholder-count="5">
+                      <span style="width: 1px; height: 11px; background: {{pip.color}};"></span>
+                    </sc-for>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="padding: 12px 26px 20px;">
+    <button style="width: 100%; min-height: 52px; border-radius: 2px; border: none; background: #5c1f33; color: #f4efe6; font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;">Save &amp; pour the next</button>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"ink":{"editor":"color","options":["#5c1f33","#2f4038","#3a3560","#6b3a1e"],"default":"#5c1f33","section":"Theme"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: 'acidity',
+      picked: { nose_intensity: 'medium+', sweetness: 'dry' },
+    };
+  }
+
+  axes() {
+    const L = ['low', 'medium-', 'medium', 'medium+', 'high'];
+    return [
+      { key: 'nose_intensity', label: 'Nose intensity', options: L },
+      { key: 'sweetness', label: 'Sweetness', options: ['bone dry', 'dry', 'off-dry', 'medium sweet', 'sweet'] },
+      { key: 'acidity', label: 'Acidity', options: L },
+      { key: 'tannin', label: 'Tannin', options: L },
+      { key: 'body', label: 'Body', options: L },
+      { key: 'alcohol', label: 'Alcohol', options: L },
+      { key: 'finish', label: 'Finish', options: ['short', 'medium', 'long'] },
+    ];
+  }
+
+  renderVals() {
+    const axes = this.axes();
+    const ink = this.props.ink ?? '#5c1f33';
+    const open = this.state.open;
+
+    const rows = axes.map((a, i) => {
+      const value = this.state.picked[a.key] ?? null;
+      const isOpen = open === a.key;
+      return {
+        num: '0' + (i + 1),
+        label: a.label,
+        isOpen: isOpen,
+        valueText: value ?? '',
+        valueColor: value ? ink : '#c8bdad',
+        labelColor: isOpen ? ink : '#1f1d1a',
+        caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: isOpen ? '' : a.key }),
+        options: a.options.map((o, j) => {
+          const on = value === o;
+          return {
+            label: o,
+            bg: on ? 'rgba(92,31,51,0.07)' : 'transparent',
+            bc: on ? ink : '#e0d8ca',
+            fg: on ? ink : '#4a453d',
+            italic: on ? 'italic' : 'normal',
+            // Hairline rules rather than dots — a printed form's tick marks.
+            pips: a.options.map((_, k) => ({
+              color: k <= j ? (on ? ink : '#b3a795') : '#e0d8ca',
+            })),
+            pick: () => {
+              const next = Object.assign({}, this.state.picked);
+              next[a.key] = o;
+              const following = axes[i + 1];
+              this.setState({ picked: next, open: following ? following.key : '' });
+            },
+          };
+        }),
+      };
+    });
+
+    return { rows: rows };
+  }
+}
+</script>
+</body>
+</html>

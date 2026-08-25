@@ -21,18 +21,25 @@ const HUES = {
 }
 
 const BASE = {
-  headline: '#f6f2ea', sub: '#d5cbe8',
-  badgeBg: '#f6f2ea', badgeFg: '#3a2470',
-  card: '#fbf7f0', cardOpen: '#ffffff',
+  // Dark type on the ground, not cream: at this lightness a cream headline
+  // drops under 4:1, and ink on saturated purple is what makes it read light
+  // rather than merely pale. Sub-text shares the headline's ink and separates
+  // by size and weight instead of by colour, which keeps it at 4.6:1.
+  headline: '#211d26', sub: '#211d26',
+  badgeBg: '#211d26', badgeFg: '#f6f2ea',
+  card: '#f7f4ef', cardOpen: '#ffffff',
   ink: '#211d26', muted: '#7d7686', empty: '#b4aec0', hairline: '#e4ddd2',
-  star: '#f2ac13', save: '#f2ac13', saveFg: '#211d26',
-  swatches: ['#6042a8', '#833a80', '#4a3a8c', '#2d7a5f'],
+  star: '#f2ac13',
+  // The primary button goes ink on a light ground — amber on light purple is
+  // two mid-tones fighting, and the star needs the amber more than this does.
+  save: '#211d26', saveFg: '#f6f2ea',
+  swatches: ['#9d6ee8', '#b46ad6', '#8a7cf5', '#6042a8'],
 }
 
 const PURPLES = {
-  Grape:    { ...BASE, ground: '#6042a8', groundTop: '#6d4fb8' },
-  Mulberry: { ...BASE, ground: '#833a80', groundTop: '#94458f', badgeFg: '#5a2358', sub: '#e2c8e0' },
-  Damson:   { ...BASE, ground: '#4a3a8c', groundTop: '#56469c' },
+  Amethyst:   { ...BASE, ground: '#9d6ee8', groundTop: '#ac82ee' },
+  Orchid:     { ...BASE, ground: '#b46ad6', groundTop: '#c17fde' },
+  Periwinkle: { ...BASE, ground: '#8a7cf5', groundTop: '#9b8ff8' },
 }
 
 const FONT = {

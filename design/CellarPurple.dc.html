@@ -10,20 +10,20 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
   <style>
     body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
-    a { color: #f2ac13; } a:hover { color: #211d26; }
+    a { color: #211d26; } a:hover { color: #211d26; }
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     button { font-family: inherit; cursor: pointer; }
     input, textarea { font-family: inherit; font-size: 16px; }
   </style>
 </helmet>
 
-<div style="width: 375px; min-height: 1020px; background: linear-gradient(180deg, #6d4fb8 0%, {{ground}} 46%); color: #f6f2ea; display: flex; flex-direction: column;">
+<div style="width: 375px; min-height: 1020px; background: linear-gradient(180deg, #ac82ee 0%, {{ground}} 46%); color: #211d26; display: flex; flex-direction: column;">
 
   <div style="display: flex; flex-direction: column; gap: 16px; padding: 32px 20px 24px;">
     <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
       <div style="display: flex; flex-direction: column; gap: 3px;">
         <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.028em; line-height: 1.02;">My cellar</h1>
-        <span style="font-size: 15px; font-weight: 500; color: #d5cbe8;">{{countLine}}</span>
+        <span style="font-size: 15px; font-weight: 500; color: #211d26;">{{countLine}}</span>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7d7686" stroke-width="2.5" stroke-linecap="round" style="position: absolute; left: 13px;">
         <circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
       </svg>
-      <input placeholder="Grape, region, a word you wrote" style="width: 100%; min-height: 48px; padding: 0 13px 0 40px; border-radius: 11px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26; outline: none;">
+      <input placeholder="Grape, region, a word you wrote" style="width: 100%; min-height: 48px; padding: 0 13px 0 40px; border-radius: 11px; border: 2px solid #211d26; background: #f7f4ef; color: #211d26; outline: none;">
     </div>
 
     <div style="display: flex; flex-wrap: wrap; gap: 7px;">
@@ -47,7 +47,7 @@
 
     <div style="display: flex; flex-direction: column; gap: 9px;">
       <sc-for list="{{bottles}}" as="b" hint-placeholder-count="4">
-        <div style="display: flex; border-radius: 12px; border: 2px solid #211d26; overflow: hidden; background: #fbf7f0;">
+        <div style="display: flex; border-radius: 12px; border: 2px solid #211d26; overflow: hidden; background: #f7f4ef;">
           <span style="flex-shrink: 0; width: 11px; background: {{b.hue}}; border-right: 2px solid #211d26;"></span>
           <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 13px; color: #211d26;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
@@ -70,7 +70,7 @@
 
 </div>
 </x-dc>
-<script data-dc-script data-props='{"ground":{"editor":"color","options":["#6042a8","#833a80","#4a3a8c","#2d7a5f"],"default":"#6042a8","section":"Theme"}}'>
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#9d6ee8","#b46ad6","#8a7cf5","#6042a8"],"default":"#9d6ee8","section":"Theme"}}'>
 
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { filter: 'all' }; }
@@ -88,7 +88,7 @@ class Component extends DCLogic {
     const shown = f === 'all' ? all : f === 'fav' ? all.filter((b) => b.favourite) : all.filter((b) => b.grape === f);
     const defs = [{ key: 'all', label: 'All' }, { key: 'fav', label: 'Favourites', star: true }, { key: 'Nebbiolo', label: 'Nebbiolo' }];
     return {
-      ground: this.props.ground ?? '#6042a8',
+      ground: this.props.ground ?? '#9d6ee8',
       bottles: shown,
       countLine: shown.length === all.length ? all.length + ' bottles · 3 favourites' : shown.length + ' of ' + all.length + ' bottles',
       filters: defs.map((d) => {
@@ -96,7 +96,7 @@ class Component extends DCLogic {
         return {
           label: d.label, isStar: !!d.star,
           starFill: on ? '#f2ac13' : 'none',
-          bg: on ? '#f2ac13' : '#fbf7f0',
+          bg: on ? '#f2ac13' : '#f7f4ef',
           bc: on ? '#211d26' : '#e4ddd2',
           weight: on ? 700 : 500,
           pick: () => this.setState({ filter: d.key }),

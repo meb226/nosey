@@ -10,23 +10,23 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
   <style>
     body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
-    a { color: #f2ac13; } a:hover { color: #211d26; }
+    a { color: #211d26; } a:hover { color: #211d26; }
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     button { font-family: inherit; cursor: pointer; }
     input, textarea { font-family: inherit; font-size: 16px; }
   </style>
 </helmet>
 
-<div style="width: 375px; min-height: 1240px; background: linear-gradient(180deg, #6d4fb8 0%, {{ground}} 46%); color: #f6f2ea; display: flex; flex-direction: column;">
+<div style="width: 375px; min-height: 1240px; background: linear-gradient(180deg, #ac82ee 0%, {{ground}} 46%); color: #211d26; display: flex; flex-direction: column;">
 
   <div style="display: flex; flex-direction: column; gap: 20px; padding: 32px 20px 12px;">
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
       <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.028em; line-height: 1.02;">New session</h1>
-      <span style="font-size: 15px; font-weight: 500; color: #d5cbe8; text-wrap: pretty;">Photograph both labels. Everything read off them is yours to correct.</span>
+      <span style="font-size: 15px; font-weight: 500; color: #211d26; text-wrap: pretty;">Photograph both labels. Everything read off them is yours to correct.</span>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 13px; padding: 15px 14px; border-radius: 12px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26;">
+    <div style="display: flex; flex-direction: column; gap: 13px; padding: 15px 14px; border-radius: 12px; border: 2px solid #211d26; background: #f7f4ef; color: #211d26;">
       <div style="display: grid; grid-template-columns: 88px 1fr; gap: 10px;">
         
   <label style="display: flex; flex-direction: column; gap: 6px; ">
@@ -46,7 +46,7 @@
     </div>
 
     <sc-for list="{{bottles}}" as="b" hint-placeholder-count="2">
-      <div style="display: flex; flex-direction: column; gap: 13px; padding: 15px 14px; border-radius: 12px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26;">
+      <div style="display: flex; flex-direction: column; gap: 13px; padding: 15px 14px; border-radius: 12px; border: 2px solid #211d26; background: #f7f4ef; color: #211d26;">
 
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
           <span style="display: flex; align-items: center; gap: 10px;">
@@ -117,19 +117,19 @@
 
   <div style="flex-grow: 1;"></div>
   <div style="padding: 12px 20px 20px;">
-    <button style="width: 100%; min-height: 54px; border-radius: 12px; border: 2px solid #211d26; background: #f2ac13; color: #211d26; font-size: 17px; font-weight: 700;">Start tasting</button>
+    <button style="width: 100%; min-height: 54px; border-radius: 12px; border: 2px solid #211d26; background: #211d26; color: #f6f2ea; font-size: 17px; font-weight: 700;">Start tasting</button>
   </div>
 
 </div>
 </x-dc>
-<script data-dc-script data-props='{"ground":{"editor":"color","options":["#6042a8","#833a80","#4a3a8c","#2d7a5f"],"default":"#6042a8","section":"Theme"}}'>
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#9d6ee8","#b46ad6","#8a7cf5","#6042a8"],"default":"#9d6ee8","section":"Theme"}}'>
 
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { shot: [true, false] }; }
   renderVals() {
     const shot = this.state.shot;
     return {
-      ground: this.props.ground ?? '#6042a8',
+      ground: this.props.ground ?? '#9d6ee8',
       bottles: [0, 1].map((i) => ({
         title: 'Bottle ' + (i + 1),
         chip: ['#16b070', '#7c4ceb'][i],

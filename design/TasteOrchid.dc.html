@@ -10,21 +10,21 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
   <style>
     body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
-    a { color: #f2ac13; } a:hover { color: #211d26; }
+    a { color: #211d26; } a:hover { color: #211d26; }
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     button { font-family: inherit; cursor: pointer; }
     input, textarea { font-family: inherit; font-size: 16px; }
   </style>
 </helmet>
 
-<div style="width: 375px; min-height: 960px; background: linear-gradient(180deg, #94458f 0%, {{ground}} 46%); color: #f6f2ea; display: flex; flex-direction: column;">
+<div style="width: 375px; min-height: 960px; background: linear-gradient(180deg, #c17fde 0%, {{ground}} 46%); color: #211d26; display: flex; flex-direction: column;">
 
   <div style="display: flex; flex-direction: column; gap: 20px; padding: 32px 20px 12px;">
     <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;">
       <div style="display: flex; flex-direction: column; gap: 10px;">
-        <span style="align-self: flex-start; background: #f6f2ea; color: #5a2358; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;">Bottle 1 of 2</span>
+        <span style="align-self: flex-start; background: #211d26; color: #f6f2ea; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;">Bottle 1 of 2</span>
         <h1 style="margin: 0; font-size: 32px; font-weight: 800; line-height: 1.04; letter-spacing: -0.026em; text-wrap: pretty;">Clos des Briords</h1>
-        <span style="font-size: 15px; font-weight: 500; color: #e2c8e0;">Muscadet Sèvre et Maine · 2022</span>
+        <span style="font-size: 15px; font-weight: 500; color: #211d26;">Muscadet Sèvre et Maine · 2022</span>
       </div>
       <button onClick="{{toggleFavourite}}" aria-pressed="{{isFavourite}}" style="flex-shrink: 0; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid #211d26; background: {{favBg}};">
         <svg width="21" height="21" viewBox="0 0 24 24" stroke="#211d26" stroke-width="2" stroke-linejoin="round" fill="{{favFill}}">
@@ -95,13 +95,13 @@
   </div>
   <div style="flex-grow: 1;"></div>
   <div style="padding: 12px 20px 20px;">
-    <button style="width: 100%; min-height: 54px; border-radius: 12px; border: 2px solid #211d26; background: #f2ac13; color: #211d26; font-size: 17px; font-weight: 700;">Save and pour the next</button>
+    <button style="width: 100%; min-height: 54px; border-radius: 12px; border: 2px solid #211d26; background: #211d26; color: #f6f2ea; font-size: 17px; font-weight: 700;">Save and pour the next</button>
   </div>
 
 </div>
 </x-dc>
 
-<script data-dc-script data-props='{"ground":{"editor":"color","options":["#6042a8","#833a80","#4a3a8c","#2d7a5f"],"default":"#833a80","section":"Theme"}}'>
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#9d6ee8","#b46ad6","#8a7cf5","#6042a8"],"default":"#b46ad6","section":"Theme"}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -138,7 +138,7 @@ class Component extends DCLogic {
         showOptions: isOpen && !a.free, showFree: isOpen && !!a.free,
         valueText: summary,
         valueColor: summary ? '#211d26' : '#b4aec0',
-        shellBg: isOpen ? '#ffffff' : '#fbf7f0',
+        shellBg: isOpen ? '#ffffff' : '#f7f4ef',
         caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
         toggle: () => this.setState({ open: isOpen ? '' : a.key }),
         options: (a.options ?? []).map((o, j) => {
@@ -174,7 +174,7 @@ class Component extends DCLogic {
       };
     });
     return {
-      rows: rows, buyOptions: buyOptions, ground: this.props.ground ?? '#833a80',
+      rows: rows, buyOptions: buyOptions, ground: this.props.ground ?? '#b46ad6',
       isFavourite: fav,
       favBg: fav ? '#f2ac13' : '#ffffff',
       favFill: fav ? '#211d26' : 'none',

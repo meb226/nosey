@@ -2,13 +2,13 @@ import { writeFile } from 'node:fs/promises'
 
 /** Home, intake and cellar, in Epilogue on Grape. They inherit whichever purple wins. */
 const P = {
-  ground: '#6042a8', groundTop: '#6d4fb8',
-  headline: '#f6f2ea', sub: '#d5cbe8',
-  badgeBg: '#f6f2ea', badgeFg: '#3a2470',
-  card: '#fbf7f0', cardOpen: '#ffffff',
+  ground: '#9d6ee8', groundTop: '#ac82ee',
+  headline: '#211d26', sub: '#211d26',
+  badgeBg: '#211d26', badgeFg: '#f6f2ea',
+  card: '#f7f4ef', cardOpen: '#ffffff',
   ink: '#211d26', muted: '#7d7686', empty: '#b4aec0', hairline: '#e4ddd2',
-  star: '#f2ac13', save: '#f2ac13', saveFg: '#211d26',
-  swatches: ['#6042a8', '#833a80', '#4a3a8c', '#2d7a5f'],
+  star: '#f2ac13', save: '#211d26', saveFg: '#f6f2ea',
+  swatches: ['#9d6ee8', '#b46ad6', '#8a7cf5', '#6042a8'],
 }
 const CHIPS = ['#2f88db', '#f2ac13', '#16b070', '#7c4ceb', '#ec6a2e', '#f2497e', '#c53fb5']
 
@@ -85,7 +85,7 @@ const home = wrap(720, `
       </sc-for>
     </div>
 
-    <button style="width: 100%; min-height: 50px; border-radius: 12px; border: 2px solid ${P.badgeBg}; background: transparent; color: ${P.headline}; font-size: 16px; font-weight: 600;">My cellar</button>
+    <button style="width: 100%; min-height: 50px; border-radius: 12px; border: 2px solid ${P.ink}; background: transparent; color: ${P.ink}; font-size: 16px; font-weight: 600;">My cellar</button>
   </div>
   <div style="flex-grow: 1;"></div>
 `, `

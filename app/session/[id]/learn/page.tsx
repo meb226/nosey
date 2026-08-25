@@ -78,8 +78,8 @@ export default async function Learn({ params }: { params: Promise<{ id: string }
         </section>
       )}
 
-      <Link href="/log" className="text-center text-[15px] text-muted underline">
-        Everything you&rsquo;ve tasted
+      <Link href="/cellar" className="text-center text-[15px] text-muted underline">
+        My cellar
       </Link>
     </main>
   )

@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+  <style>
+    body { margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; }
+    a { color: #f0bc52; } a:hover { color: #1e241f; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+    input { font-family: inherit; font-size: 16px; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 960px; background: radial-gradient(130% 55% at 50% 0%, #3d9979 0%, #2d7a5f 70%); color: #f7f3e8; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 16px; padding: 30px 20px 12px;">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <h1 style="margin: 0; font-size: 33px; font-weight: 700; line-height: 1.0; letter-spacing: -0.025em;">My cellar</h1>
+        <span style="font-size: 15px; font-weight: 500; color: #cfe6da;">{{countLine}}</span>
+      </div>
+      <button style="flex-shrink: 0; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid #1e241f; background: #f0bc52; box-shadow: 0 2px 0 0 #1e241f;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1e241f" stroke-width="3" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div style="position: relative; display: flex; align-items: center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7f867e" stroke-width="2.5" stroke-linecap="round" style="position: absolute; left: 13px;">
+        <circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+      </svg>
+      <input placeholder="Grape, region, a word you wrote" style="width: 100%; min-height: 48px; padding: 0 13px 0 40px; border-radius: 12px; border: 2px solid #1e241f; background: #fbf6ec; color: #1e241f; outline: none; box-shadow: 0 2px 0 0 #1e241f;">
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+        <button onClick="{{f.pick}}" style="display: flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 2px solid #1e241f; font-size: 15px; font-weight: 600; color: #1e241f; background: {{f.bg}}; box-shadow: {{f.shadow}}; transform: {{f.lift}};">
+          <sc-if value="{{f.isStar}}" hint-placeholder-val="{{true}}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="{{f.starFill}}" stroke="#1e241f" stroke-width="2" stroke-linejoin="round">
+              <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon>
+            </svg>
+          </sc-if>
+          <span>{{f.label}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <sc-for list="{{bottles}}" as="b" hint-placeholder-count="4">
+        <div style="display: flex; border-radius: 12px; border: 2px solid #1e241f; overflow: hidden; background: #fbf6ec; box-shadow: 0 2px 0 0 #1e241f;">
+
+          <span style="flex-shrink: 0; width: 10px; background: {{b.hue}}; border-right: 2px solid #1e241f;"></span>
+
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; padding: 13px 13px 14px; color: #1e241f;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+              <span style="font-size: 17px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; text-wrap: pretty;">{{b.name}}</span>
+              <span style="display: flex; flex-shrink: 0; align-items: center; gap: 7px;">
+                <sc-if value="{{b.favourite}}" hint-placeholder-val="{{true}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#f0bc52" stroke="#1e241f" stroke-width="2" stroke-linejoin="round">
+                    <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon>
+                  </svg>
+                </sc-if>
+                <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; padding: 0 7px; border-radius: 7px; border: 2px solid #1e241f; background: #ffffff; font-size: 14px; font-weight: 700;">{{b.score}}</span>
+              </span>
+            </div>
+            <span style="font-size: 14px; font-weight: 500; color: #6f766e;">{{b.meta}}</span>
+            <span style="font-size: 15px; line-height: 1.4; text-wrap: pretty;">{{b.takeaway}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#2d7a5f","#a8455f","#3f7fa8","#7d7a2e"],"default":"#2d7a5f","section":"Theme"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all' };
+  }
+
+  all() {
+    return [
+      { name: 'Clos des Briords', grape: 'Melon de Bourgogne', meta: 'Muscadet Sèvre et Maine · 2022', hue: '#f0bc52', score: '9', favourite: true, takeaway: 'The salt is the whole point. Would not have called the acid high before tonight.' },
+      { name: 'Vietti Perbacco', grape: 'Nebbiolo', meta: 'Langhe · 2021', hue: '#9f7ce0', score: '8', favourite: false, takeaway: 'Grip that dries the gums long after the fruit has gone.' },
+      { name: 'Hirsch Zöbing', grape: 'Grüner Veltliner', meta: 'Kamptal · 2021', hue: '#55bf8d', score: '7', favourite: true, takeaway: 'White pepper is real and not something I talked myself into.' },
+      { name: 'Clos Cibonne Tibouren', grape: 'Tibouren', meta: 'Côtes de Provence · 2022', hue: '#ef7d9f', score: '8', favourite: false, takeaway: 'Rosé with actual structure. Sat much heavier than expected.' },
+      { name: 'Foradori Granato', grape: 'Teroldego', meta: 'Vigneti delle Dolomiti · 2019', hue: '#6aa6df', score: '9', favourite: true, takeaway: 'Both of us said medium tannin. Both of us were a step low.' },
+    ];
+  }
+
+  renderVals() {
+    const all = this.all();
+    const filter = this.state.filter;
+    const shown = filter === 'all' ? all
+      : filter === 'fav' ? all.filter((b) => b.favourite)
+      : all.filter((b) => b.grape === filter);
+
+    const defs = [{ key: 'all', label: 'All' }, { key: 'fav', label: 'Favourites', star: true }]
+      .concat(['Nebbiolo', 'Melon de Bourgogne'].map((g) => ({ key: g, label: g })));
+
+    const filters = defs.map((d) => {
+      const on = filter === d.key;
+      return {
+        label: d.label,
+        isStar: !!d.star,
+        starFill: on ? '#f0bc52' : 'none',
+        bg: on ? '#f0bc52' : '#fbf6ec',
+        shadow: on ? '0 1px 0 0 #1e241f' : '0 2px 0 0 #1e241f',
+        lift: on ? 'translateY(1px)' : 'translateY(0)',
+        pick: () => this.setState({ filter: d.key }),
+      };
+    });
+
+    const favCount = all.filter((b) => b.favourite).length;
+    const countLine = shown.length === all.length
+      ? all.length + ' bottles · ' + favCount + ' favourites'
+      : shown.length + ' of ' + all.length + ' bottles';
+
+    return { bottles: shown, filters: filters, countLine: countLine, ground: this.props.ground ?? '#2d7a5f' };
+  }
+}
+</script>
+</body>
+</html>

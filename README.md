@@ -71,7 +71,16 @@ These are load-bearing, not preferences:
 - Screen Wake Lock is Safari 18.4+ and home-screen web apps only. It's a no-op
   in the browser, which is why `lib/useWakeLock.ts` feature-checks rather than
   wrapping a missing API in a try/catch.
-- `/session/*` and `/log` are `no-store`.
+- `/session/*` and `/cellar` are never served stale. Worth knowing before you
+  try to "fix" this: Next **overrides Cache-Control on dynamically rendered App
+  Router responses**, so neither a `headers()` rule in `next.config.mjs` nor a
+  `middleware.ts` can set `no-store` on them — both were tried and measured, and
+  a probe header proved middleware runs while its Cache-Control is discarded.
+  What every one of these routes actually returns is `no-cache, must-revalidate`,
+  from `export const dynamic = 'force-dynamic'`. That satisfies the intent (the
+  browser always revalidates, the server always re-renders); it is not the
+  literal `no-store` MIK-33 asks for. The gap only matters on a shared machine,
+  which two phones are not.
 
 ## Layout
 

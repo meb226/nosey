@@ -1,0 +1,236 @@
+import { writeFile } from 'node:fs/promises'
+
+/**
+ * Dark folders on a light ground. The rule throughout: a ROW is dark with
+ * white type, a SURFACE YOU TYPE INTO is white with dark type. So a collapsed
+ * accordion header is dark, its expanded body is white, and the header stays
+ * dark while open — the folder metaphor holds rather than flipping.
+ *
+ * Everything here is aimed at being readable three glasses in: white on
+ * #3a1f4d is 12.6:1, the row labels went to 700, and the state of a row is
+ * carried by a whole dark-versus-white block rather than by a tint.
+ */
+const P = {
+  ground: '#dfa3f5', groundTop: '#e9bcf9',
+  headline: '#2a1338', sub: '#3d2050',
+  badgeBg: '#2a1338', badgeFg: '#f8e2ff',
+  folder: '#3a1f4d', folderOpen: '#2e1740',
+  folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#c3aad1',
+  cardOpen: '#ffffff',
+  ink: '#241a2b', muted: '#6f6479', empty: '#b8aec2', hairline: '#ddd4e4',
+  star: '#f2ac13', save: '#f2ac13', saveFg: '#241a2b',
+  swatches: ['#dfa3f5', '#f2ccff', '#9d6ee8', '#b46ad6'],
+}
+
+const HUES = {
+  nose_intensity: { chip: '#2f88db', fill: '#8fc0e8' },
+  sweetness:      { chip: '#f2ac13', fill: '#f6cc6e' },
+  acidity:        { chip: '#16b070', fill: '#6fd3ab' },
+  tannin:         { chip: '#7c4ceb', fill: '#b39cf2' },
+  body:           { chip: '#ec6a2e', fill: '#f2a077' },
+  alcohol:        { chip: '#f2497e', fill: '#f78fae' },
+  finish:         { chip: '#c53fb5', fill: '#dd8fd3' },
+}
+
+const doc = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
+  <style>
+    body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
+    a { color: ${P.ink}; } a:hover { color: ${P.folder}; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea { font-family: inherit; font-size: 16px; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 980px; background: linear-gradient(180deg, ${P.groundTop} 0%, {{ground}} 46%); color: ${P.headline}; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 32px 20px 12px;">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <span style="align-self: flex-start; background: ${P.badgeBg}; color: ${P.badgeFg}; font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;">Bottle 1 of 2</span>
+        <h1 style="margin: 0; font-size: 32px; font-weight: 800; line-height: 1.04; letter-spacing: -0.026em; text-wrap: pretty;">Clos des Briords</h1>
+        <span style="font-size: 15px; font-weight: 600; color: ${P.sub};">Muscadet Sèvre et Maine · 2022</span>
+      </div>
+      <button onClick="{{toggleFavourite}}" aria-pressed="{{isFavourite}}" style="flex-shrink: 0; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 999px; border: 2px solid ${P.ink}; background: {{favBg}};">
+        <svg width="21" height="21" viewBox="0 0 24 24" stroke="${P.ink}" stroke-width="2" stroke-linejoin="round" fill="{{favFill}}">
+          <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon>
+        </svg>
+      </button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 9px;">
+      <sc-for list="{{rows}}" as="row" hint-placeholder-count="6">
+        <div style="border-radius: 12px; border: 2px solid ${P.folderBorder}; overflow: hidden;">
+
+          <button onClick="{{row.toggle}}" style="width: 100%; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border: none; text-align: left; color: ${P.folderText}; background: {{row.headerBg}};">
+            <span style="display: flex; align-items: center; gap: 11px;">
+              <span style="width: 17px; height: 17px; border-radius: 5px; border: 2px solid ${P.folderBorder}; background: {{row.chip}};"></span>
+              <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.008em;">{{row.label}}</span>
+              <sc-if value="{{row.hasInfo}}" hint-placeholder-val="{{true}}">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid ${P.folderMuted}; font-size: 11px; font-weight: 700; color: ${P.folderMuted};">i</span>
+              </sc-if>
+            </span>
+            <span style="display: flex; align-items: center; gap: 9px;">
+              <span style="font-size: 18px; font-weight: 700; color: {{row.valueColor}};">{{row.valueText}}</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${P.folderBorder}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: {{row.caret}};">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <sc-if value="{{row.showOptions}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 7px; padding: 12px 12px 13px; background: ${P.cardOpen};">
+              <sc-for list="{{row.options}}" as="opt" hint-placeholder-count="5">
+                <button onClick="{{opt.pick}}" style="width: 100%; min-height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 13px; border-radius: 9px; border: 2px solid {{opt.bc}}; font-size: 17px; font-weight: {{opt.weight}}; color: ${P.ink}; background: {{opt.bg}};">
+                  <span>{{opt.label}}</span>
+                  <span style="display: flex; gap: 3px; align-items: flex-end; height: 14px;">
+                    <sc-for list="{{opt.pips}}" as="pip" hint-placeholder-count="5">
+                      <span style="width: 4px; border-radius: 2px; background: {{pip.color}}; height: {{pip.h}};"></span>
+                    </sc-for>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{row.showFree}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 15px; padding: 13px 12px 15px; background: ${P.cardOpen}; color: ${P.ink};">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${P.muted};">Score</span>
+                <span style="display: flex; align-items: center; gap: 10px;">
+                  <button onClick="{{scoreDown}}" style="width: 48px; height: 48px; border-radius: 9px; border: 2px solid ${P.ink}; background: ${P.cardOpen}; font-size: 23px; font-weight: 700; color: ${P.ink}; line-height: 1;">−</button>
+                  <span style="min-width: 60px; text-align: center; font-size: 33px; font-weight: 800; letter-spacing: -0.026em; color: {{scoreColor}};">{{scoreText}}</span>
+                  <button onClick="{{scoreUp}}" style="width: 48px; height: 48px; border-radius: 9px; border: 2px solid ${P.ink}; background: ${P.cardOpen}; font-size: 23px; font-weight: 700; color: ${P.ink}; line-height: 1;">+</button>
+                </span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${P.muted};">Buy it again</span>
+                <div style="display: flex; gap: 7px;">
+                  <sc-for list="{{buyOptions}}" as="b" hint-placeholder-count="2">
+                    <button onClick="{{b.pick}}" style="flex-grow: 1; min-height: 50px; border-radius: 9px; border: 2px solid {{b.bc}}; font-size: 17px; font-weight: {{b.weight}}; color: ${P.ink}; background: {{b.bg}};">{{b.label}}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: ${P.muted};">Anything else</span>
+                <textarea rows="3" placeholder="The one thing you want to remember" style="width: 100%; padding: 11px 13px; border-radius: 9px; border: 2px solid ${P.ink}; background: ${P.cardOpen}; color: ${P.ink}; outline: none; resize: none;"></textarea>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+  <div style="padding: 12px 20px 20px;">
+    <button style="width: 100%; min-height: 56px; border-radius: 12px; border: 2px solid ${P.ink}; background: ${P.save}; color: ${P.saveFg}; font-size: 17px; font-weight: 700;">Save and pour the next</button>
+  </div>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"ground":{"editor":"color","options":${JSON.stringify(P.swatches)},"default":"${P.ground}","section":"Theme"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: 'acidity', picked: { nose_intensity: 'medium+', sweetness: 'dry' }, favourite: false, score: null, buy: null };
+  }
+  axes() {
+    const L = ['low', 'medium-', 'medium', 'medium+', 'high'];
+    const H = ${JSON.stringify(HUES)};
+    return [
+      { key: 'nose_intensity', label: 'Nose intensity', options: L },
+      { key: 'sweetness', label: 'Sweetness', options: ['bone dry', 'dry', 'off-dry', 'medium sweet', 'sweet'] },
+      { key: 'acidity', label: 'Acidity', options: L },
+      { key: 'tannin', label: 'Tannin', options: L },
+      { key: 'body', label: 'Body', options: L },
+      { key: 'alcohol', label: 'Alcohol', options: L },
+      { key: 'finish', label: 'Finish', options: ['short', 'medium', 'long'] },
+      { key: 'anything_else', label: 'Anything else', free: true },
+    ].map((a) => Object.assign(a, { chip: (H[a.key] || {}).chip || '${P.folderMuted}', fill: (H[a.key] || {}).fill }));
+  }
+  setScore(d) {
+    const c = this.state.score === null ? 7 : this.state.score + d;
+    this.setState({ score: Math.max(1, Math.min(10, c)) });
+  }
+  renderVals() {
+    const axes = this.axes();
+    const open = this.state.open;
+    const fav = this.state.favourite;
+    const rows = axes.map((a, i) => {
+      const value = this.state.picked[a.key] ?? null;
+      const isOpen = open === a.key;
+      const summary = a.free ? (this.state.score === null ? '' : this.state.score + '/10') : (value ?? '');
+      return {
+        label: a.label, chip: a.chip, hasInfo: !a.free,
+        showOptions: isOpen && !a.free, showFree: isOpen && !!a.free,
+        valueText: summary,
+        // White when answered, a dimmed lilac when not — both sit on the dark
+        // folder, so an unanswered row still reads without shouting.
+        valueColor: summary ? '${P.folderText}' : '${P.folderMuted}',
+        headerBg: isOpen ? '${P.folderOpen}' : '${P.folder}',
+        caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+        toggle: () => this.setState({ open: isOpen ? '' : a.key }),
+        options: (a.options ?? []).map((o, j) => {
+          const on = value === o;
+          const total = a.options.length;
+          return {
+            label: o,
+            bg: on ? a.fill : '${P.cardOpen}',
+            bc: on ? '${P.ink}' : '${P.hairline}',
+            weight: on ? 700 : 500,
+            pips: a.options.map((_, k) => ({
+              color: k <= j ? '${P.ink}' : (on ? 'rgba(36,26,43,0.3)' : '${P.hairline}'),
+              h: String(5 + Math.round((k / (total - 1)) * 9)) + 'px',
+            })),
+            pick: () => {
+              const next = Object.assign({}, this.state.picked);
+              next[a.key] = o;
+              const following = axes[i + 1];
+              this.setState({ picked: next, open: following ? following.key : '' });
+            },
+          };
+        }),
+      };
+    });
+    const buyOptions = ['yes', 'no'].map((b) => {
+      const on = this.state.buy === b;
+      return {
+        label: b === 'yes' ? 'Yes' : 'No',
+        bg: on ? '${HUES.acidity.fill}' : '${P.cardOpen}',
+        bc: on ? '${P.ink}' : '${P.hairline}',
+        weight: on ? 700 : 500,
+        pick: () => this.setState({ buy: on ? null : b }),
+      };
+    });
+    return {
+      rows: rows, buyOptions: buyOptions, ground: this.props.ground ?? '${P.ground}',
+      isFavourite: fav,
+      favBg: fav ? '${P.star}' : '${P.cardOpen}',
+      favFill: fav ? '${P.ink}' : 'none',
+      toggleFavourite: () => this.setState({ favourite: !fav }),
+      scoreText: this.state.score === null ? '—' : String(this.state.score),
+      scoreColor: this.state.score === null ? '${P.empty}' : '${P.ink}',
+      scoreUp: () => this.setScore(1), scoreDown: () => this.setScore(-1),
+    };
+  }
+}
+</script>
+</body>
+</html>
+`
+
+await writeFile(new URL('./TasteFolders.dc.html', import.meta.url), doc)
+console.log('wrote TasteFolders.dc.html')

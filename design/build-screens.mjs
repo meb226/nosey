@@ -2,13 +2,14 @@ import { writeFile } from 'node:fs/promises'
 
 /** Home, intake and cellar, in Epilogue on Grape. They inherit whichever purple wins. */
 const P = {
-  ground: '#f2ccff', groundTop: '#f8e2ff',
-  headline: '#241a2b', sub: '#241a2b',
-  badgeBg: '#241a2b', badgeFg: '#f8e2ff',
+  ground: '#dfa3f5', groundTop: '#e9bcf9',
+  headline: '#2a1338', sub: '#3d2050',
+  badgeBg: '#2a1338', badgeFg: '#f8e2ff',
+  folder: '#3a1f4d', folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#c3aad1',
   card: '#ffffff', cardOpen: '#ffffff',
-  ink: '#241a2b', muted: '#7a6f85', empty: '#b8aec2', hairline: '#e3dae8',
-  star: '#f2ac13', save: '#241a2b', saveFg: '#f8e2ff',
-  swatches: ['#f2ccff', '#dfa3f5', '#9d6ee8', '#b46ad6'],
+  ink: '#241a2b', muted: '#6f6479', empty: '#b8aec2', hairline: '#ddd4e4',
+  star: '#f2ac13', save: '#f2ac13', saveFg: '#241a2b',
+  swatches: ['#dfa3f5', '#f2ccff', '#9d6ee8', '#b46ad6'],
 }
 const CHIPS = ['#2f88db', '#f2ac13', '#16b070', '#7c4ceb', '#ec6a2e', '#f2497e', '#c53fb5']
 
@@ -69,23 +70,23 @@ const home = wrap(720, `
       </sc-for>
     </div>
 
-    <button style="width: 100%; min-height: 58px; border-radius: 12px; border: 2px solid ${P.ink}; background: ${P.save}; color: ${P.saveFg}; font-size: 18px; font-weight: 700;">Start a session</button>
+    <button style="width: 100%; min-height: 58px; border-radius: 12px; border: 2px solid ${P.ink}; background: ${P.star}; color: ${P.saveFg}; font-size: 18px; font-weight: 700;">Start a session</button>
 
     <div style="display: flex; flex-direction: column; gap: 9px;">
       ${label('Pick up where you left off')}
       <sc-for list="{{recent}}" as="r" hint-placeholder-count="2">
-        <button style="display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 13px; border-radius: 11px; border: 2px solid ${P.ink}; background: ${P.card}; color: ${P.ink};">
-          <span style="flex-shrink: 0; width: 17px; height: 17px; border-radius: 5px; border: 2px solid ${P.ink}; background: {{r.chip}};"></span>
+        <button style="display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 14px 13px; border-radius: 11px; border: 2px solid ${P.folderBorder}; background: ${P.folder}; color: ${P.folderText};">
+          <span style="flex-shrink: 0; width: 17px; height: 17px; border-radius: 5px; border: 2px solid ${P.folderBorder}; background: {{r.chip}};"></span>
           <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
             <span style="font-size: 16px; font-weight: 700; letter-spacing: -0.012em;">{{r.title}}</span>
-            <span style="font-size: 13px; font-weight: 500; color: ${P.muted};">{{r.meta}}</span>
+            <span style="font-size: 13px; font-weight: 500; color: ${P.folderMuted};">{{r.meta}}</span>
           </span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${P.ink}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${P.folderBorder}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
         </button>
       </sc-for>
     </div>
 
-    <button style="width: 100%; min-height: 50px; border-radius: 12px; border: 2px solid ${P.ink}; background: transparent; color: ${P.ink}; font-size: 16px; font-weight: 600;">My cellar</button>
+    <button style="width: 100%; min-height: 50px; border-radius: 12px; border: 2px solid ${P.ink}; background: transparent; color: ${P.ink}; font-weight: 700; font-size: 16px; font-weight: 600;">My cellar</button>
   </div>
   <div style="flex-grow: 1;"></div>
 `, `
@@ -232,19 +233,19 @@ const cellar = wrap(1020, `
 
     <div style="display: flex; flex-direction: column; gap: 9px;">
       <sc-for list="{{bottles}}" as="b" hint-placeholder-count="4">
-        <div style="display: flex; border-radius: 12px; border: 2px solid ${P.ink}; overflow: hidden; background: ${P.card};">
-          <span style="flex-shrink: 0; width: 11px; background: {{b.hue}}; border-right: 2px solid ${P.ink};"></span>
-          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 13px; color: ${P.ink};">
+        <div style="display: flex; border-radius: 12px; border: 2px solid ${P.folderBorder}; overflow: hidden; background: ${P.folder};">
+          <span style="flex-shrink: 0; width: 12px; background: {{b.hue}}; border-right: 2px solid ${P.folderBorder};"></span>
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 14px 13px; color: ${P.folderText};">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
               <span style="font-size: 17px; font-weight: 700; line-height: 1.15; letter-spacing: -0.014em; text-wrap: pretty;">{{b.name}}</span>
               <span style="display: flex; flex-shrink: 0; align-items: center; gap: 7px;">
                 <sc-if value="{{b.favourite}}" hint-placeholder-val="{{true}}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="${P.star}" stroke="${P.ink}" stroke-width="2" stroke-linejoin="round"><polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon></svg>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="${P.star}" stroke="${P.folderBorder}" stroke-width="2" stroke-linejoin="round"><polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon></svg>
                 </sc-if>
-                <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; padding: 0 7px; border-radius: 7px; border: 2px solid ${P.ink}; background: ${P.cardOpen}; font-size: 14px; font-weight: 700;">{{b.score}}</span>
+                <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 33px; height: 27px; padding: 0 7px; border-radius: 7px; border: 2px solid ${P.folderBorder}; background: ${P.cardOpen}; color: ${P.ink}; font-size: 14px; font-weight: 700;">{{b.score}}</span>
               </span>
             </div>
-            <span style="font-size: 13px; font-weight: 500; color: ${P.muted};">{{b.meta}}</span>
+            <span style="font-size: 13px; font-weight: 500; color: ${P.folderMuted};">{{b.meta}}</span>
             <span style="font-size: 15px; line-height: 1.4; text-wrap: pretty;">{{b.takeaway}}</span>
           </div>
         </div>

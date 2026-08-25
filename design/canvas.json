@@ -2,7 +2,7 @@
   "pages": [
     {
       "id": "page-5",
-      "name": "F2CCFF"
+      "name": "Dark folders"
     },
     {
       "id": "page-4",
@@ -23,29 +23,20 @@
   ],
   "artboards": [
     {
-      "file": "TasteLilac.dc.html",
-      "title": "F2CCFF",
+      "file": "TasteFolders.dc.html",
+      "title": "Dark folders — #DFA3F5",
       "page": "page-5",
       "x": 0,
       "y": 0,
       "w": 375,
-      "h": 960
-    },
-    {
-      "file": "TasteLilacDeep.dc.html",
-      "title": "One step down",
-      "page": "page-5",
-      "x": 470,
-      "y": 0,
-      "w": 375,
-      "h": 960
+      "h": 980
     },
     {
       "file": "Home.dc.html",
       "title": "Home — the front of the app",
       "page": "page-5",
-      "x": 0,
-      "y": 1130,
+      "x": 470,
+      "y": 0,
       "w": 375,
       "h": 720
     },
@@ -53,8 +44,8 @@
       "file": "Intake.dc.html",
       "title": "Intake — labels and OCR",
       "page": "page-5",
-      "x": 470,
-      "y": 1130,
+      "x": 940,
+      "y": 0,
       "w": 375,
       "h": 1240
     },
@@ -62,8 +53,8 @@
       "file": "CellarPurple.dc.html",
       "title": "My cellar",
       "page": "page-5",
-      "x": 940,
-      "y": 1130,
+      "x": 1410,
+      "y": 0,
       "w": 375,
       "h": 1020
     },
@@ -207,47 +198,39 @@
     {
       "id": "note-purple",
       "x": 0,
-      "y": -280,
-      "w": 845,
+      "y": -300,
+      "w": 1785,
       "page": "page-5",
-      "text": "#F2CCFF, AS ASKED — and one step down beside it.\n\nA ground this pale changed what the cards had to do. A near-white card would have been invisible against it, so rather than fight that: a COLLAPSED row is now transparent and an OPEN row is white. Opening a row visibly lifts it off the ground, and the pale colour becomes part of the mechanism instead of a backdrop behind it. The 2px borders hold the structure either way.\n\nThe ink picked up a purple cast so it sits in the same family as the ground rather than on top of it. 11.5:1, so every size is comfortable.\n\nAnd the saturated chips finally have the pale field they wanted — this is the loudest they have looked."
+      "text": "DARK FOLDERS ON #DFA3F5 — built for reading three glasses in.\n\nOne rule runs through every screen: a ROW is dark with white type, a SURFACE YOU TYPE INTO is white with dark type. So the collapsed folder is dark, its expanded body is white, and the header STAYS dark while open — the folder metaphor holds instead of the whole card flipping colour under you.\n\nWhite on #3a1f4d is 12.6:1, up from the 4.6:1 that dark-on-purple was giving. Row labels went to 700 and rows to 58px. The state of a row is now carried by a whole dark-versus-white block rather than by a tint, which is the part that actually survives being tipsy — you are not asked to judge a subtle difference.\n\nThe chips got white borders instead of ink, so they read as lit tiles on the dark folder. The save button went amber rather than dark, so the one thing that commits your note is never mistaken for another folder.\n\nHome and My Cellar follow the same rule; Intake keeps white cards throughout because it is nothing but form fields."
     },
     {
-      "id": "note-grape",
+      "id": "note-folders",
       "x": 0,
-      "y": 1008,
+      "y": 1028,
       "w": 375,
       "page": "page-5",
-      "text": "F2CCFF — exactly the value you gave.\n\nAiry, and the chips sing against it. But two things worth weighing against your own earlier calls.\n\nIt is LIGHTER than Apricot, which you passed on partly because a light screen at a dim table is a torch. And it reads sweeter than the \"touch more serious\" you asked for a few rounds back. Neither is a veto — just the same objections, applied consistently."
-    },
-    {
-      "id": "note-mulberry",
-      "x": 470,
-      "y": 1008,
-      "w": 375,
-      "page": "page-5",
-      "text": "ONE STEP DOWN — #DFA3F5, the same hue with the saturation carried further and the lightness pulled back.\n\nKeeps the airiness and most of the pop, loses some of the pastel sweetness. Cards read more clearly against it.\n\nHere in case F2CCFF turns out to be a shade past where you wanted to land — not a counter-proposal."
+      "text": "THE TASTE SCREEN.\n\nOpen a row and the body lifts to white under a header that stays dark. Pick a value and it advances.\n\nAn unanswered row shows a dimmed lilac dash rather than nothing, so you can see at a glance how far down the flight you are."
     },
     {
       "id": "note-home",
-      "x": 0,
-      "y": 1898,
+      "x": 470,
+      "y": 768,
       "w": 375,
       "page": "page-5",
       "text": "HOME — what opens when you launch it.\n\nThe counts are the point: bottles, favourites, sessions. That accumulation is the only reward this app has, so it goes at the top rather than buried in the cellar.\n\nThen one primary action, then the sessions you might return to — including one showing she has not written hers yet, which is where the hold-off rule surfaces outside the learn screen.\n\nSigned-out, this is the passphrase screen instead."
     },
     {
       "id": "note-intake",
-      "x": 470,
-      "y": 2398,
+      "x": 940,
+      "y": 1288,
       "w": 375,
       "page": "page-5",
       "text": "INTAKE — the screen you asked after.\n\nBottle one is shot and read; bottle two is empty. Tap its frame to watch the fill happen.\n\nThe amber CHECK IT pill is doing the important work: OCR proposes and you confirm, so every field it filled is an ordinary editable input and the badge says out loud that a machine guessed. No field commits without you looking at it.\n\nThe photo area is a drawn placeholder, not a fake label."
     },
     {
       "id": "note-cellarp",
-      "x": 940,
-      "y": 2178,
+      "x": 1410,
+      "y": 1068,
       "w": 375,
       "page": "page-5",
       "text": "MY CELLAR — carried into purple.\n\nAlready built: /cellar is a live route with search across producer, cuvée, grape, region and your own takeaway text."

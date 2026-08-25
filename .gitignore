@@ -7,3 +7,7 @@ out
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# Seeded design canvas — a ~2.3 MB build output. Regenerate from design/ with
+# the design skill's seed-canvas helper rather than committing each pass.
+wino-taste-screen.html

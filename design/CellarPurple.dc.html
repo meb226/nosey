@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
+  <style>
+    body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
+    a { color: #f2ac13; } a:hover { color: #211d26; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea { font-family: inherit; font-size: 16px; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 1020px; background: linear-gradient(180deg, #6d4fb8 0%, {{ground}} 46%); color: #f6f2ea; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 16px; padding: 32px 20px 24px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.028em; line-height: 1.02;">My cellar</h1>
+        <span style="font-size: 15px; font-weight: 500; color: #d5cbe8;">{{countLine}}</span>
+      </div>
+    </div>
+
+    <div style="position: relative; display: flex; align-items: center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7d7686" stroke-width="2.5" stroke-linecap="round" style="position: absolute; left: 13px;">
+        <circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+      </svg>
+      <input placeholder="Grape, region, a word you wrote" style="width: 100%; min-height: 48px; padding: 0 13px 0 40px; border-radius: 11px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26; outline: none;">
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+        <button onClick="{{f.pick}}" style="display: flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 2px solid {{f.bc}}; font-size: 15px; font-weight: {{f.weight}}; color: #211d26; background: {{f.bg}};">
+          <sc-if value="{{f.isStar}}" hint-placeholder-val="{{true}}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="{{f.starFill}}" stroke="#211d26" stroke-width="2" stroke-linejoin="round"><polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon></svg>
+          </sc-if>
+          <span>{{f.label}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 9px;">
+      <sc-for list="{{bottles}}" as="b" hint-placeholder-count="4">
+        <div style="display: flex; border-radius: 12px; border: 2px solid #211d26; overflow: hidden; background: #fbf7f0;">
+          <span style="flex-shrink: 0; width: 11px; background: {{b.hue}}; border-right: 2px solid #211d26;"></span>
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 13px; color: #211d26;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+              <span style="font-size: 17px; font-weight: 700; line-height: 1.15; letter-spacing: -0.014em; text-wrap: pretty;">{{b.name}}</span>
+              <span style="display: flex; flex-shrink: 0; align-items: center; gap: 7px;">
+                <sc-if value="{{b.favourite}}" hint-placeholder-val="{{true}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#f2ac13" stroke="#211d26" stroke-width="2" stroke-linejoin="round"><polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9"></polygon></svg>
+                </sc-if>
+                <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 26px; padding: 0 7px; border-radius: 7px; border: 2px solid #211d26; background: #ffffff; font-size: 14px; font-weight: 700;">{{b.score}}</span>
+              </span>
+            </div>
+            <span style="font-size: 13px; font-weight: 500; color: #7d7686;">{{b.meta}}</span>
+            <span style="font-size: 15px; line-height: 1.4; text-wrap: pretty;">{{b.takeaway}}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="flex-grow: 1;"></div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#6042a8","#833a80","#4a3a8c","#2d7a5f"],"default":"#6042a8","section":"Theme"}}'>
+
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { filter: 'all' }; }
+  all() {
+    return [
+      { name: 'Clos des Briords', grape: 'Melon de Bourgogne', meta: 'Muscadet Sèvre et Maine · 2022', hue: '#f2ac13', score: '9', favourite: true, takeaway: 'The salt is the whole point. Would not have called the acid high before tonight.' },
+      { name: 'Vietti Perbacco', grape: 'Nebbiolo', meta: 'Langhe · 2021', hue: '#7c4ceb', score: '8', favourite: false, takeaway: 'Grip that dries the gums long after the fruit has gone.' },
+      { name: 'Hirsch Zöbing', grape: 'Grüner Veltliner', meta: 'Kamptal · 2021', hue: '#16b070', score: '7', favourite: true, takeaway: 'White pepper is real and not something I talked myself into.' },
+      { name: 'Foradori Granato', grape: 'Teroldego', meta: 'Vigneti delle Dolomiti · 2019', hue: '#2f88db', score: '9', favourite: true, takeaway: 'Both of us said medium tannin. Both of us were a step low.' },
+    ];
+  }
+  renderVals() {
+    const all = this.all();
+    const f = this.state.filter;
+    const shown = f === 'all' ? all : f === 'fav' ? all.filter((b) => b.favourite) : all.filter((b) => b.grape === f);
+    const defs = [{ key: 'all', label: 'All' }, { key: 'fav', label: 'Favourites', star: true }, { key: 'Nebbiolo', label: 'Nebbiolo' }];
+    return {
+      ground: this.props.ground ?? '#6042a8',
+      bottles: shown,
+      countLine: shown.length === all.length ? all.length + ' bottles · 3 favourites' : shown.length + ' of ' + all.length + ' bottles',
+      filters: defs.map((d) => {
+        const on = f === d.key;
+        return {
+          label: d.label, isStar: !!d.star,
+          starFill: on ? '#f2ac13' : 'none',
+          bg: on ? '#f2ac13' : '#fbf7f0',
+          bc: on ? '#211d26' : '#e4ddd2',
+          weight: on ? 700 : 500,
+          pick: () => this.setState({ filter: d.key }),
+        };
+      }),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

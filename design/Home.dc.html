@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
+  <style>
+    body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
+    a { color: #f2ac13; } a:hover { color: #211d26; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea { font-family: inherit; font-size: 16px; }
+  </style>
+</helmet>
+
+<div style="width: 375px; min-height: 720px; background: linear-gradient(180deg, #6d4fb8 0%, {{ground}} 46%); color: #f6f2ea; display: flex; flex-direction: column;">
+
+  <div style="display: flex; flex-direction: column; gap: 22px; padding: 44px 20px 24px;">
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <h1 style="margin: 0; font-size: 46px; font-weight: 800; letter-spacing: -0.04em; line-height: 0.95;">Wino</h1>
+      <span style="font-size: 16px; font-weight: 500; color: #d5cbe8; text-wrap: pretty;">Write it down first. Then find out what it was.</span>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px; padding: 11px 12px; border-radius: 11px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26;">
+          <span style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;">{{s.n}}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #7d7686;">{{s.label}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <button style="width: 100%; min-height: 58px; border-radius: 12px; border: 2px solid #211d26; background: #f2ac13; color: #211d26; font-size: 18px; font-weight: 700;">Start a session</button>
+
+    <div style="display: flex; flex-direction: column; gap: 9px;">
+      <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #7d7686;">Pick up where you left off</span>
+      <sc-for list="{{recent}}" as="r" hint-placeholder-count="2">
+        <button style="display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 13px; border-radius: 11px; border: 2px solid #211d26; background: #fbf7f0; color: #211d26;">
+          <span style="flex-shrink: 0; width: 17px; height: 17px; border-radius: 5px; border: 2px solid #211d26; background: {{r.chip}};"></span>
+          <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px;">
+            <span style="font-size: 16px; font-weight: 700; letter-spacing: -0.012em;">{{r.title}}</span>
+            <span style="font-size: 13px; font-weight: 500; color: #7d7686;">{{r.meta}}</span>
+          </span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#211d26" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+        </button>
+      </sc-for>
+    </div>
+
+    <button style="width: 100%; min-height: 50px; border-radius: 12px; border: 2px solid #f6f2ea; background: transparent; color: #f6f2ea; font-size: 16px; font-weight: 600;">My cellar</button>
+  </div>
+  <div style="flex-grow: 1;"></div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"ground":{"editor":"color","options":["#6042a8","#833a80","#4a3a8c","#2d7a5f"],"default":"#6042a8","section":"Theme"}}'>
+
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      ground: this.props.ground ?? '#6042a8',
+      stats: [
+        { n: '14', label: 'bottles' },
+        { n: '5', label: 'favourites' },
+        { n: '7', label: 'sessions' },
+      ],
+      recent: [
+        { title: 'Cool vs. warm Chardonnay', meta: 'Session 7 · both written', chip: '#f2ac13' },
+        { title: 'Loire Cabernet Franc', meta: 'Session 6 · she has not written hers', chip: '#ec6a2e' },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

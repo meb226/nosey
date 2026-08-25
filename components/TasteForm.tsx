@@ -5,58 +5,64 @@ import { useRouter } from 'next/navigation'
 import { useWakeLock } from '@/lib/useWakeLock'
 import { WordInput } from '@/components/WordInput'
 import { InfoTag } from '@/components/InfoTag'
+import { AXES } from '@/lib/axes'
 import { AXIS_INFO, WORD_INFO } from '@/lib/axisInfo'
-import { LEVELS, SWEETNESS, FINISH } from '@/lib/types'
 import type { Bottle } from '@/lib/types'
 
-/**
- * The six structure axes. Nose intensity is deliberately not one of them —
- * it belongs with the nose words, and the schema orders it that way.
- */
-const AXES = [
-  { key: 'sweetness', label: 'Sweetness', options: SWEETNESS },
-  { key: 'acidity', label: 'Acidity', options: LEVELS },
-  { key: 'tannin', label: 'Tannin', options: LEVELS },
-  { key: 'body', label: 'Body', options: LEVELS },
-  { key: 'alcohol', label: 'Alcohol', options: LEVELS },
-  { key: 'finish', label: 'Finish', options: FINISH },
-] as const
+type Levels = Record<string, string | undefined>
 
-type Values = Record<string, string | undefined>
-
-function Axis({
-  label,
-  info,
-  options,
-  value,
-  onPick,
-}: {
-  label: string
-  info: string
-  options: readonly string[]
-  value: string | undefined
-  onPick: (v: string) => void
-}) {
+function Caret({ open }: { open: boolean }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[13px] uppercase tracking-wide text-muted">{label}</span>
-        <InfoTag label={label} text={info} />
-      </div>
-      <div className="flex gap-1.5">
-        {options.map((o) => (
-          <button
-            key={o}
-            type="button"
-            className="axis"
-            aria-pressed={value === o}
-            onClick={() => onPick(o)}
-          >
-            {o}
-          </button>
-        ))}
-      </div>
-    </div>
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={open ? 'rotate-180' : ''}
+      aria-hidden
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  )
+}
+
+function Star({ filled }: { filled: boolean }) {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="round"
+      fill={filled ? 'currentColor' : 'none'}
+      aria-hidden
+    >
+      <polygon points="12 2.6 15 9 22 9.9 17 14.7 18.2 21.6 12 18.3 5.8 21.6 7 14.7 2 9.9 9 9" />
+    </svg>
+  )
+}
+
+/** A low-to-high read alongside the word, so the scale is visible as well as named. */
+function Pips({ index, total, selected }: { index: number; total: number; selected: boolean }) {
+  return (
+    <span className="flex h-3.5 items-end gap-[3px]" aria-hidden>
+      {Array.from({ length: total }, (_, k) => (
+        <span
+          key={k}
+          className="w-1 rounded-sm"
+          style={{
+            height: `${5 + Math.round((k / (total - 1)) * 9)}px`,
+            background:
+              k <= index ? '#241a2b' : selected ? 'rgba(36,26,43,0.3)' : '#ddd4e4',
+          }}
+        />
+      ))}
+    </span>
   )
 }
 
@@ -71,11 +77,15 @@ export function TasteForm({
 }) {
   const router = useRouter()
   const [index, setIndex] = useState(startAt)
-  const [values, setValues] = useState<Values>({})
+  const [open, setOpen] = useState<string>(AXES[0].key)
+  const [levels, setLevels] = useState<Levels>({})
   const [noseWords, setNoseWords] = useState<string[]>([])
   const [palateWords, setPalateWords] = useState<string[]>([])
-  const [score, setScore] = useState('')
+  const [score, setScore] = useState<number | null>(null)
+  const [buyAgain, setBuyAgain] = useState<boolean | null>(null)
+  const [drinkWith, setDrinkWith] = useState('')
   const [takeaway, setTakeaway] = useState('')
+  const [favourite, setFavourite] = useState(false)
   const [saving, setSaving] = useState(false)
 
   const bottle = bottles[index]
@@ -84,12 +94,21 @@ export function TasteForm({
   // Twenty minutes with the phone face-up on the table. Released on save.
   useWakeLock(!saving)
 
+  function advance(fromKey: string) {
+    const i = AXES.findIndex((a) => a.key === fromKey)
+    setOpen(AXES[i + 1] ? AXES[i + 1].key : '')
+  }
+
   function reset() {
-    setValues({})
+    setOpen(AXES[0].key)
+    setLevels({})
     setNoseWords([])
     setPalateWords([])
-    setScore('')
+    setScore(null)
+    setBuyAgain(null)
+    setDrinkWith('')
     setTakeaway('')
+    setFavourite(false)
   }
 
   /** Written per bottle, on completion. Killing the tab loses at most this one. */
@@ -100,16 +119,19 @@ export function TasteForm({
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         bottle_id: bottle.id,
-        nose_intensity: values.nose_intensity ?? null,
-        sweetness: values.sweetness ?? null,
-        acidity: values.acidity ?? null,
-        tannin: values.tannin ?? null,
-        body: values.body ?? null,
-        alcohol: values.alcohol ?? null,
-        finish: values.finish ?? null,
+        nose_intensity: levels.nose_intensity ?? null,
+        sweetness: levels.sweetness ?? null,
+        acidity: levels.acidity ?? null,
+        tannin: levels.tannin ?? null,
+        body: levels.body ?? null,
+        alcohol: levels.alcohol ?? null,
+        finish: levels.finish ?? null,
         nose_words: noseWords,
         palate_words: palateWords,
-        score: score ? Number(score) : null,
+        score,
+        buy_again: buyAgain,
+        drink_with: drinkWith || null,
+        favourite,
         takeaway: takeaway || null,
       }),
     })
@@ -127,88 +149,206 @@ export function TasteForm({
     }
   }
 
+  /** What a shut folder shows on its right, so you can see how far along you are. */
+  function summary(key: string): string {
+    if (key === 'nose_words') return noseWords.length ? `${noseWords.length} words` : ''
+    if (key === 'palate_words') return palateWords.length ? `${palateWords.length} words` : ''
+    if (key === 'anything_else') return score != null ? `${score}/10` : ''
+    return levels[key] ?? ''
+  }
+
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-6 px-6 pb-4 pt-10">
-      <header>
-        <div className="text-[13px] uppercase tracking-wide text-muted">
-          Bottle {index + 1} of {bottles.length}
+    <main className="mx-auto flex min-h-dvh max-w-sm flex-col bg-gradient-to-b from-groundtop to-ground to-[46%]">
+      <div className="flex flex-col gap-5 px-5 pb-3 pt-8">
+        <div className="flex items-start justify-between gap-3.5">
+          <div className="flex flex-col gap-2.5">
+            <span className="self-start rounded-full bg-headline px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-groundtop">
+              Bottle {index + 1} of {bottles.length}
+            </span>
+            <h1 className="text-[32px] font-extrabold leading-[1.04] tracking-[-0.026em] text-headline text-pretty">
+              {[bottle.producer, bottle.wine].filter(Boolean).join(' ') || 'This one'}
+            </h1>
+            <span className="text-[15px] font-semibold text-sub">
+              {[bottle.region, bottle.vintage].filter(Boolean).join(' · ')}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setFavourite(!favourite)}
+            aria-pressed={favourite}
+            aria-label="Mark as a favourite"
+            className={`flex h-[46px] w-[46px] flex-shrink-0 items-center justify-center rounded-full border-2 border-ink text-ink ${
+              favourite ? 'bg-amber' : 'bg-white'
+            }`}
+          >
+            <Star filled={favourite} />
+          </button>
         </div>
-        <h1 className="mt-1 text-2xl font-semibold">
-          {[bottle.producer, bottle.wine].filter(Boolean).join(' ') || 'This one'}
-        </h1>
-        <p className="text-[15px] text-muted">
-          {[bottle.region, bottle.vintage].filter(Boolean).join(' · ')}
-        </p>
-      </header>
 
-      <section className="flex flex-col gap-3">
-        <Axis
-          label="Nose intensity"
-          info={AXIS_INFO.nose_intensity}
-          options={LEVELS}
-          value={values.nose_intensity}
-          onPick={(v) => setValues({ ...values, nose_intensity: v })}
-        />
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[13px] uppercase tracking-wide text-muted">Nose</span>
-          <InfoTag label="the nose words" text={WORD_INFO} />
+        <div className="flex flex-col gap-2.5">
+          {AXES.map((axis) => {
+            const isOpen = open === axis.key
+            const value = summary(axis.key)
+            return (
+              <div key={axis.key} className="folder">
+                <button
+                  type="button"
+                  data-open={isOpen}
+                  aria-expanded={isOpen}
+                  onClick={() => setOpen(isOpen ? '' : axis.key)}
+                  className="folder-head"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <span className="chip" style={{ background: axis.chip }} aria-hidden />
+                    <span className="text-[15px] font-bold tracking-[-0.008em]">{axis.label}</span>
+                  </span>
+                  <span className="flex items-center gap-2.5">
+                    <span
+                      className={`text-[18px] font-bold ${value ? 'text-onfolder' : 'text-onfoldermuted'}`}
+                    >
+                      {value || '—'}
+                    </span>
+                    <Caret open={isOpen} />
+                  </span>
+                </button>
+
+                {isOpen && (
+                  <div className="folder-body">
+                    {axis.kind === 'level' && (
+                      <>
+                        <InfoTag label={axis.label} text={AXIS_INFO[axis.key]} />
+                        <div className="flex flex-col gap-[7px]">
+                          {axis.options!.map((o, j) => {
+                            const on = levels[axis.key] === o
+                            return (
+                              <button
+                                key={o}
+                                type="button"
+                                aria-pressed={on}
+                                className="opt"
+                                style={on ? { background: axis.fill } : undefined}
+                                onClick={() => {
+                                  setLevels({ ...levels, [axis.key]: o })
+                                  advance(axis.key)
+                                }}
+                              >
+                                <span>{o}</span>
+                                <Pips index={j} total={axis.options!.length} selected={on} />
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </>
+                    )}
+
+                    {axis.kind === 'words' && (
+                      <>
+                        <InfoTag label={`the ${axis.label.toLowerCase()} words`} text={WORD_INFO} />
+                        <WordInput
+                          words={axis.key === 'nose_words' ? noseWords : palateWords}
+                          onChange={axis.key === 'nose_words' ? setNoseWords : setPalateWords}
+                          placeholder={
+                            axis.key === 'nose_words' ? 'What do you smell?' : 'What do you taste?'
+                          }
+                        />
+                        <button
+                          type="button"
+                          onClick={() => advance(axis.key)}
+                          className="btn-quiet mt-3"
+                        >
+                          Next
+                        </button>
+                      </>
+                    )}
+
+                    {axis.kind === 'free' && (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="eyebrow">Score</span>
+                          <span className="flex items-center gap-2.5">
+                            <button
+                              type="button"
+                              aria-label="Lower the score"
+                              onClick={() => setScore(Math.max(1, (score ?? 8) - 1))}
+                              className="h-12 w-12 rounded-[9px] border-2 border-ink bg-white text-[23px] font-bold leading-none text-ink active:bg-ink active:text-white"
+                            >
+                              −
+                            </button>
+                            <span
+                              className={`min-w-[60px] text-center text-[33px] font-extrabold tracking-[-0.026em] ${
+                                score == null ? 'text-empty' : 'text-ink'
+                              }`}
+                            >
+                              {score ?? '—'}
+                            </span>
+                            <button
+                              type="button"
+                              aria-label="Raise the score"
+                              onClick={() => setScore(Math.min(10, (score ?? 6) + 1))}
+                              className="h-12 w-12 rounded-[9px] border-2 border-ink bg-white text-[23px] font-bold leading-none text-ink active:bg-ink active:text-white"
+                            >
+                              +
+                            </button>
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <span className="eyebrow">Buy it again</span>
+                          <div className="flex gap-[7px]">
+                            {[true, false].map((yes) => (
+                              <button
+                                key={String(yes)}
+                                type="button"
+                                aria-pressed={buyAgain === yes}
+                                className="opt flex-1 justify-center"
+                                style={buyAgain === yes ? { background: '#6fd3ab' } : undefined}
+                                onClick={() => setBuyAgain(buyAgain === yes ? null : yes)}
+                              >
+                                {yes ? 'Yes' : 'No'}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <label className="flex flex-col gap-2">
+                          <span className="eyebrow">Drink it with</span>
+                          <input
+                            className="field min-h-[50px]"
+                            value={drinkWith}
+                            onChange={(e) => setDrinkWith(e.target.value)}
+                            placeholder="Oysters, or anything salty"
+                          />
+                        </label>
+
+                        <label className="flex flex-col gap-2">
+                          <span className="eyebrow">Anything else</span>
+                          <textarea
+                            className="field resize-none"
+                            rows={3}
+                            value={takeaway}
+                            onChange={(e) => setTakeaway(e.target.value)}
+                            placeholder="The one thing you want to remember"
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
-        <WordInput words={noseWords} onChange={setNoseWords} placeholder="What do you smell?" />
-      </section>
+      </div>
 
-      <section className="flex flex-col gap-3 border-t border-line pt-5">
-        {AXES.map((a) => (
-          <Axis
-            key={a.key}
-            label={a.label}
-            info={AXIS_INFO[a.key]}
-            options={a.options}
-            value={values[a.key]}
-            onPick={(v) => setValues({ ...values, [a.key]: v })}
-          />
-        ))}
-      </section>
-
-      <section className="flex flex-col gap-3 border-t border-line pt-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[13px] uppercase tracking-wide text-muted">Palate</span>
-          <InfoTag label="the palate words" text={WORD_INFO} />
-        </div>
-        <WordInput
-          words={palateWords}
-          onChange={setPalateWords}
-          placeholder="What do you taste?"
-        />
-      </section>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] uppercase tracking-wide text-muted">Score</span>
-        <input
-          className="field"
-          inputMode="numeric"
-          value={score}
-          onChange={(e) => setScore(e.target.value)}
-        />
-      </label>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] uppercase tracking-wide text-muted">Takeaway</span>
-        <textarea
-          className="field"
-          rows={3}
-          value={takeaway}
-          onChange={(e) => setTakeaway(e.target.value)}
-        />
-      </label>
+      <div className="flex-1" />
 
       {/*
-        A docked action bar, not a floating button: it is opaque and would
-        otherwise sit on top of whichever axis happened to be behind it. The
-        paper backdrop and the -mx-6 bleed make it read as the bottom of the
-        screen. env(safe-area-inset-bottom) padding is on body, so this clears
-        the home indicator in standalone.
+        A docked bar, not a floating button: it needs an opaque backdrop or
+        the folders scroll through behind it. env() padding on body clears
+        the home indicator.
       */}
-      <div className="sticky bottom-0 -mx-6 mt-2 bg-paper px-6 pb-3 pt-3">
+      <div className="sticky bottom-0 bg-ground px-5 pb-5 pt-3">
         <button className="btn" onClick={save} disabled={saving}>
           {saving ? 'Saving…' : last ? 'Save and see what it was' : 'Save and pour the next'}
         </button>

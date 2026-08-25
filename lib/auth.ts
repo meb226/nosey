@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import type { Taster } from './types'
 
-const COOKIE = 'wino_taster'
+const COOKIE = 'nosey_taster'
 
 /**
  * One year. The acceptance criterion is that neither of us re-authenticates
@@ -21,8 +21,8 @@ function bytes(s: string): BufferSource {
 }
 
 function secret(): BufferSource {
-  const s = process.env.WINO_COOKIE_SECRET
-  if (!s) throw new Error('WINO_COOKIE_SECRET is not set. See .env.local.example.')
+  const s = process.env.NOSEY_COOKIE_SECRET
+  if (!s) throw new Error('NOSEY_COOKIE_SECRET is not set. See .env.local.example.')
   return bytes(s)
 }
 
@@ -47,8 +47,8 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 export function checkPassphrase(input: string): boolean {
-  const expected = process.env.WINO_PASSPHRASE
-  if (!expected) throw new Error('WINO_PASSPHRASE is not set. See .env.local.example.')
+  const expected = process.env.NOSEY_PASSPHRASE
+  if (!expected) throw new Error('NOSEY_PASSPHRASE is not set. See .env.local.example.')
   return safeEqual(input, expected)
 }
 

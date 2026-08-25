@@ -3,10 +3,10 @@
 import { useState } from 'react'
 
 /**
- * Flavor words. These are never graded — they exist to be reflected back and
- * grouped, so entry stays completely free-form. No autocomplete from a fixed
- * lexicon: suggesting the vocabulary is the same anchoring problem as showing
- * the descriptors before you taste.
+ * Flavour words. Never graded — they exist to be reflected back and grouped,
+ * so entry stays completely free-form. Deliberately no autocomplete from a
+ * fixed lexicon: suggesting the vocabulary is the same anchoring problem as
+ * showing the descriptors before you taste.
  */
 export function WordInput({
   words,
@@ -29,23 +29,25 @@ export function WordInput({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2.5">
       {words.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {words.map((w) => (
             <button
               key={w}
               type="button"
               onClick={() => onChange(words.filter((x) => x !== w))}
-              className="rounded-full border border-line bg-white px-3 py-1.5 text-[15px] active:bg-line"
+              className="flex min-h-[40px] items-center gap-2 rounded-full border-2 border-ink bg-white px-3.5 text-[16px] font-semibold text-ink active:bg-ink active:text-white"
             >
-              {w} <span className="text-muted">×</span>
+              {w}
+              <span aria-hidden className="text-muted">×</span>
+              <span className="sr-only">remove</span>
             </button>
           ))}
         </div>
       )}
       <input
-        className="field"
+        className="field min-h-[50px]"
         value={draft}
         placeholder={placeholder}
         autoCapitalize="none"

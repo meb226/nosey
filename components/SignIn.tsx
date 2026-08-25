@@ -28,48 +28,56 @@ export function SignIn() {
   }
 
   return (
-    <form onSubmit={submit} className="mx-auto flex max-w-sm flex-col gap-4 px-6 py-16">
-      <div>
-        <h1 className="text-3xl font-semibold">Wino</h1>
-        <p className="mt-1 text-[15px] text-muted">
-          Write it down first. Then find out what it was.
+    <main className="mx-auto flex min-h-dvh max-w-sm flex-col bg-gradient-to-b from-groundtop to-ground to-[46%]">
+      <form onSubmit={submit} className="flex flex-col gap-6 px-5 pb-6 pt-16">
+        <div className="flex flex-col gap-1.5">
+          <h1 className="text-[46px] font-extrabold leading-[0.95] tracking-[-0.04em] text-headline">
+            Nosey
+          </h1>
+          <p className="text-[16px] font-semibold text-sub text-pretty">
+            Write it down first. Then find out what it was.
+          </p>
+        </div>
+
+        <div className="folder">
+          <div className="folder-body gap-4">
+            <label className="flex flex-col gap-2">
+              <span className="eyebrow">Who are you</span>
+              <input
+                className="field min-h-[50px]"
+                value={taster}
+                onChange={(e) => setTaster(e.target.value)}
+                autoCapitalize="words"
+                autoComplete="given-name"
+                required
+              />
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <span className="eyebrow">Passphrase</span>
+              <input
+                className="field min-h-[50px]"
+                type="password"
+                value={passphrase}
+                onChange={(e) => setPassphrase(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </label>
+
+            {error && <p className="text-[15px] font-semibold text-ink">{error}</p>}
+          </div>
+        </div>
+
+        <button className="btn" disabled={busy}>
+          {busy ? 'One moment' : 'Start'}
+        </button>
+
+        <p className="text-[14px] font-medium leading-relaxed text-sub text-pretty">
+          For the full-screen version: tap Share, then Add to Home Screen. iOS has no install
+          prompt, so it has to be done by hand — once per phone.
         </p>
-      </div>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] uppercase tracking-wide text-muted">Who are you</span>
-        <input
-          className="field"
-          value={taster}
-          onChange={(e) => setTaster(e.target.value)}
-          autoCapitalize="words"
-          autoComplete="given-name"
-          required
-        />
-      </label>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-[13px] uppercase tracking-wide text-muted">Passphrase</span>
-        <input
-          className="field"
-          type="password"
-          value={passphrase}
-          onChange={(e) => setPassphrase(e.target.value)}
-          autoComplete="current-password"
-          required
-        />
-      </label>
-
-      {error && <p className="text-[15px] text-wine">{error}</p>}
-
-      <button className="btn mt-2" disabled={busy}>
-        {busy ? 'One moment' : 'Start'}
-      </button>
-
-      <p className="mt-6 text-[13px] leading-relaxed text-muted">
-        Add this to your home screen for the full-screen version: tap Share, then Add to Home
-        Screen. iOS has no install prompt, so it has to be done by hand — once per phone.
-      </p>
-    </form>
+      </form>
+    </main>
   )
 }

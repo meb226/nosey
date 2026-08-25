@@ -1,4 +1,4 @@
-# Wino
+# Nosey
 
 A tasting log for two people learning wine, that explains what you just drank
 *after* you've written down what you noticed.
@@ -86,23 +86,48 @@ These are load-bearing, not preferences:
 
 ```
 app/
-  page.tsx                    sign in, or recent sessions
+  page.tsx                    sign in, or home — counts, recent, cellar
   session/new/                session setup, label photo, OCR prefill
-  session/[id]/taste/         one bottle at a time, written on completion
+  session/[id]/taste/         the accordion, one bottle at a time
   session/[id]/learn/         the explanation, gated per taster per bottle
-  log/                        everything, filterable
+  cellar/                     everything, searchable and filterable
+  preview/                    dev-only: the taste screen with no database
   api/
     auth  notes  sessions  upload
     ocr                       label → structured fields (vision)
     explain                   per-bottle explanation
     flight                    the comparison, gated on all bottles
 lib/
+  axes.ts       what the taste screen asks, in order, with its two colours
+  axisInfo.ts   what each axis means — definitions only, never a reference value
   auth.ts       HMAC-signed taster cookie
   db.ts         Neon client, lazily constructed
   queries.ts    the reads that drive every unlock
   types.ts      structure axes and row types
+components/     TasteForm (the accordion), NewSessionForm (intake), …
+design/         working files for the design canvas
 db/schema.sql
 ```
+
+## The taste screen
+
+One folder open at a time. Picking a value collapses it and opens the next,
+so a note is a guided pass rather than a wall of controls. Five options across
+375px was the original layout and it did not survive contact with a phone.
+
+The design rule underneath it: **a row is dark with white type; a surface you
+type into is white with dark type.** Row state is a whole block of colour, not
+a tint — nobody should have to judge a subtle difference two glasses in.
+
+Each axis carries two colours in `lib/axes.ts`. `chip` is the saturated tile on
+the folder header; `fill` is the lighter tint a selected option fills with. One
+colour cannot do both: saturated enough to read on `#9900cc` is too dark to
+carry near-black option text.
+
+`lib/axisInfo.ts` defines each axis and how to perceive it, and deliberately
+never names a grape, region or typical value. Defining an axis is teaching;
+saying what a bottle should measure is the anchoring this app exists to
+prevent.
 
 `lib/db.ts` and `lib/anthropic.ts` import `server-only`, so a client component
 that reaches for either fails the build rather than shipping a key.

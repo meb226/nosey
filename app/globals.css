@@ -4,8 +4,8 @@
 
 @layer base {
   html {
-    /* Safari's rubber-band scroll exposes the page background behind the app. */
-    background: theme('colors.paper');
+    /* Safari's rubber-band scroll exposes this behind the app. */
+    background: theme('colors.ground');
     -webkit-text-size-adjust: 100%;
   }
 
@@ -18,8 +18,8 @@
 
   /*
    * Below 16px Safari zooms the viewport on focus and does not zoom back.
-   * This is a functional requirement, not a typography preference — do not
-   * lower it, and do not override it per-field.
+   * Functional requirement, not a typography preference — do not lower it,
+   * and do not override it per-field.
    */
   input,
   textarea,
@@ -28,10 +28,7 @@
     font-size: 16px;
   }
 
-  /*
-   * There is no hover on a phone. The grey flash Safari paints on tap is not
-   * an affordance, so kill it and supply a real active state instead.
-   */
+  /* No hover on a phone. Kill the tap flash; every control has an :active. */
   * {
     -webkit-tap-highlight-color: transparent;
   }
@@ -43,34 +40,70 @@
 }
 
 @layer components {
-  /* The structure-axis tap targets. Explicit active state, no hover. */
-  .axis {
-    @apply flex-1 rounded-lg border border-line py-3 text-center text-[15px] transition-none;
+  /*
+   * A ROW is a folder: #9900cc with white type, white rule.
+   * A SURFACE YOU TYPE INTO is white with dark type.
+   * That split is the whole system — it is what makes state readable at a
+   * glance rather than something you have to squint at.
+   */
+  .folder {
+    @apply overflow-hidden rounded-xl border-2 border-white;
   }
-  .axis[aria-pressed='true'] {
-    @apply border-wine bg-wine text-white;
+  .folder-head {
+    @apply flex min-h-[58px] w-full items-center justify-between gap-2.5 border-none bg-folder px-3.5 py-2.5 text-left text-white;
   }
-  .axis:active {
-    @apply scale-[0.97] bg-line;
+  .folder-head[data-open='true'] {
+    @apply bg-folderopen;
   }
-  .axis[aria-pressed='true']:active {
-    @apply bg-wine/80;
+  .folder-head:active {
+    @apply bg-folderopen;
+  }
+  .folder-body {
+    @apply flex flex-col bg-white px-3 pb-3.5 pt-3;
+  }
+
+  /* The saturated tile that makes an axis recognisable across sessions. */
+  .chip {
+    @apply h-[17px] w-[17px] flex-shrink-0 rounded-[5px] border-2 border-white;
+  }
+
+  /* One option inside an open folder. Selection is a fill plus a firm rule. */
+  .opt {
+    @apply flex min-h-[50px] w-full items-center justify-between gap-3 rounded-[9px] border-2 border-hairline bg-white px-3.5 text-[17px] font-medium text-ink;
+  }
+  .opt[aria-pressed='true'] {
+    @apply border-ink font-bold;
+  }
+  .opt:active {
+    @apply border-ink;
   }
 
   .field {
-    @apply w-full rounded-lg border border-line bg-white px-3 py-2.5 outline-none;
+    @apply w-full rounded-[9px] border-2 border-hairline bg-white px-3 py-2.5 text-ink outline-none;
   }
   .field:focus {
-    @apply border-wine;
+    @apply border-ink;
   }
 
+  /* The one control that commits a note. Amber so it is never an eighth folder. */
   .btn {
-    @apply w-full rounded-xl bg-wine py-3.5 font-medium text-white;
+    @apply min-h-[56px] w-full rounded-xl border-2 border-ink bg-amber text-[17px] font-bold text-ink;
   }
   .btn:active {
-    @apply bg-wine/80;
+    @apply bg-ink text-amber;
   }
   .btn:disabled {
-    @apply bg-muted opacity-60;
+    @apply border-muted bg-hairline text-muted;
+  }
+
+  .btn-quiet {
+    @apply min-h-[50px] w-full rounded-xl border-2 border-ink bg-transparent text-[16px] font-bold text-ink;
+  }
+  .btn-quiet:active {
+    @apply bg-ink text-white;
+  }
+
+  .eyebrow {
+    @apply text-[13px] font-bold uppercase tracking-[0.06em] text-muted;
   }
 }

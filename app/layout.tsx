@@ -1,26 +1,34 @@
 import type { Metadata, Viewport } from 'next'
+import { Epilogue } from 'next/font/google'
 import './globals.css'
 
+// Self-hosted by next/font: no request to Google at runtime, no layout shift
+// when it swaps in, and nothing to load on a phone with one bar of signal.
+const epilogue = Epilogue({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-epilogue',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'Wino',
+  title: 'Nosey',
   description: 'Write it down first. Then find out what it was.',
-  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Wino' },
+  appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Nosey' },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  // The taste screen's controls sit where the home indicator is.
+  // The save button sits where the home indicator is.
   viewportFit: 'cover',
-  // Safari zooms on focus for inputs under 16px and never zooms back.
-  // Inputs are 16px+ in globals.css, so we can leave pinch-zoom alone.
-  themeColor: '#faf7f2',
+  themeColor: '#dfa3f5',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-paper text-ink antialiased">{children}</body>
+    <html lang="en" className={epilogue.variable}>
+      <body className="bg-ground font-sans text-ink antialiased">{children}</body>
     </html>
   )
 }

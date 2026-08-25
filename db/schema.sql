@@ -1,4 +1,4 @@
--- Wino v1 schema. Run against the Neon database once.
+-- Nosey v1 schema. Run against the Neon database once.
 
 create table if not exists sessions (
   id          uuid primary key default gen_random_uuid(),

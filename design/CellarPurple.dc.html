@@ -47,7 +47,7 @@
 
     <div style="display: flex; flex-direction: column; gap: 9px;">
       <sc-for list="{{bottles}}" as="b" hint-placeholder-count="4">
-        <div style="display: flex; border-radius: 12px; border: 2px solid #ffffff; overflow: hidden; background: #3a1f4d;">
+        <div style="display: flex; border-radius: 12px; border: 2px solid #ffffff; overflow: hidden; background: #9900cc;">
           <span style="flex-shrink: 0; width: 12px; background: {{b.hue}}; border-right: 2px solid #ffffff;"></span>
           <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 14px 13px; color: #ffffff;">
             <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
@@ -59,7 +59,7 @@
                 <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 33px; height: 27px; padding: 0 7px; border-radius: 7px; border: 2px solid #ffffff; background: #ffffff; color: #241a2b; font-size: 14px; font-weight: 700;">{{b.score}}</span>
               </span>
             </div>
-            <span style="font-size: 13px; font-weight: 500; color: #c3aad1;">{{b.meta}}</span>
+            <span style="font-size: 13px; font-weight: 500; color: #eacff5;">{{b.meta}}</span>
             <span style="font-size: 15px; line-height: 1.4; text-wrap: pretty;">{{b.takeaway}}</span>
           </div>
         </div>
@@ -77,7 +77,7 @@ class Component extends DCLogic {
   all() {
     return [
       { name: 'Clos des Briords', grape: 'Melon de Bourgogne', meta: 'Muscadet Sèvre et Maine · 2022', hue: '#f2ac13', score: '9', favourite: true, takeaway: 'The salt is the whole point. Would not have called the acid high before tonight.' },
-      { name: 'Vietti Perbacco', grape: 'Nebbiolo', meta: 'Langhe · 2021', hue: '#7c4ceb', score: '8', favourite: false, takeaway: 'Grip that dries the gums long after the fruit has gone.' },
+      { name: 'Vietti Perbacco', grape: 'Nebbiolo', meta: 'Langhe · 2021', hue: '#8b5cf6', score: '8', favourite: false, takeaway: 'Grip that dries the gums long after the fruit has gone.' },
       { name: 'Hirsch Zöbing', grape: 'Grüner Veltliner', meta: 'Kamptal · 2021', hue: '#16b070', score: '7', favourite: true, takeaway: 'White pepper is real and not something I talked myself into.' },
       { name: 'Foradori Granato', grape: 'Teroldego', meta: 'Vigneti delle Dolomiti · 2019', hue: '#2f88db', score: '9', favourite: true, takeaway: 'Both of us said medium tannin. Both of us were a step low.' },
     ];

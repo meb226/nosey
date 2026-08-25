@@ -2,7 +2,7 @@
   "pages": [
     {
       "id": "page-5",
-      "name": "Dark folders"
+      "name": "9900CC folders"
     },
     {
       "id": "page-4",
@@ -24,7 +24,7 @@
   "artboards": [
     {
       "file": "TasteFolders.dc.html",
-      "title": "Dark folders — #DFA3F5",
+      "title": "Taste — #9900CC folders",
       "page": "page-5",
       "x": 0,
       "y": 0,
@@ -201,7 +201,7 @@
       "y": -300,
       "w": 1785,
       "page": "page-5",
-      "text": "DARK FOLDERS ON #DFA3F5 — built for reading three glasses in.\n\nOne rule runs through every screen: a ROW is dark with white type, a SURFACE YOU TYPE INTO is white with dark type. So the collapsed folder is dark, its expanded body is white, and the header STAYS dark while open — the folder metaphor holds instead of the whole card flipping colour under you.\n\nWhite on #3a1f4d is 12.6:1, up from the 4.6:1 that dark-on-purple was giving. Row labels went to 700 and rows to 58px. The state of a row is now carried by a whole dark-versus-white block rather than by a tint, which is the part that actually survives being tipsy — you are not asked to judge a subtle difference.\n\nThe chips got white borders instead of ink, so they read as lit tiles on the dark folder. The save button went amber rather than dark, so the one thing that commits your note is never mistaken for another folder.\n\nHome and My Cellar follow the same rule; Intake keeps white cards throughout because it is nothing but form fields."
+      "text": "#9900CC FOLDERS on #DFA3F5.\n\nWhite on this is 6.5:1 — down from the 12.6:1 the near-black was giving, but still clear of the 4.5:1 floor at every size, and it stands off the ground at 3.3:1 so the folders still read as separate blocks. An open header goes one step deeper to #7D00A8, so open-versus-shut survives without the whole card changing colour under you.\n\nThe rule still runs through every screen: a ROW is dark with white type, a SURFACE YOU TYPE INTO is white with dark type. Row state is a whole block of colour rather than a tint, which is the part that actually survives being three glasses in.\n\nONE THING THIS BROKE, now fixed. The finish chip was magenta, which on a vivid purple header read as very slightly different purple — one of seven axes losing its identity. Finish is teal now, and tannin's violet went a step brighter so the white border is not doing all the work. Every chip is clearly itself again.\n\nWatch for on a real screen: a large field of colour this saturated can shimmer slightly against white type. The row labels are short so it should be fine, but that is a phone-in-hand judgement, not one you can make from an artboard."
     },
     {
       "id": "note-folders",
@@ -209,7 +209,7 @@
       "y": 1028,
       "w": 375,
       "page": "page-5",
-      "text": "THE TASTE SCREEN.\n\nOpen a row and the body lifts to white under a header that stays dark. Pick a value and it advances.\n\nAn unanswered row shows a dimmed lilac dash rather than nothing, so you can see at a glance how far down the flight you are."
+      "text": "THE TASTE SCREEN.\n\nOpen a row and the body lifts to white under a header that stays purple. Pick a value and it advances.\n\nAn unanswered row shows a dimmed dash rather than nothing, so you can see how far down the flight you are without counting."
     },
     {
       "id": "note-home",

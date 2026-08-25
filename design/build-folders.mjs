@@ -14,8 +14,11 @@ const P = {
   ground: '#dfa3f5', groundTop: '#e9bcf9',
   headline: '#2a1338', sub: '#3d2050',
   badgeBg: '#2a1338', badgeFg: '#f8e2ff',
-  folder: '#3a1f4d', folderOpen: '#2e1740',
-  folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#c3aad1',
+  // Vivid rather than dark: white on this is 6.5:1, and it stands off the
+  // ground at 3.3:1. The open header goes a step deeper so open-versus-shut
+  // still reads without the whole card changing colour.
+  folder: '#9900cc', folderOpen: '#7d00a8',
+  folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#eacff5',
   cardOpen: '#ffffff',
   ink: '#241a2b', muted: '#6f6479', empty: '#b8aec2', hairline: '#ddd4e4',
   star: '#f2ac13', save: '#f2ac13', saveFg: '#241a2b',
@@ -26,10 +29,10 @@ const HUES = {
   nose_intensity: { chip: '#2f88db', fill: '#8fc0e8' },
   sweetness:      { chip: '#f2ac13', fill: '#f6cc6e' },
   acidity:        { chip: '#16b070', fill: '#6fd3ab' },
-  tannin:         { chip: '#7c4ceb', fill: '#b39cf2' },
+  tannin:         { chip: '#8b5cf6', fill: '#b39cf2' },
   body:           { chip: '#ec6a2e', fill: '#f2a077' },
   alcohol:        { chip: '#f2497e', fill: '#f78fae' },
-  finish:         { chip: '#c53fb5', fill: '#dd8fd3' },
+  finish:         { chip: '#0fa5b0', fill: '#7fd3da' },
 }
 
 const doc = `<!doctype html>

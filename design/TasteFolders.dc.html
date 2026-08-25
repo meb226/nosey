@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400..800&display=swap">
   <style>
     body { margin: 0; font-family: Epilogue, system-ui, sans-serif; }
-    a { color: #241a2b; } a:hover { color: #3a1f4d; }
+    a { color: #241a2b; } a:hover { color: #9900cc; }
     * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     button { font-family: inherit; cursor: pointer; }
     input, textarea { font-family: inherit; font-size: 16px; }
@@ -43,7 +43,7 @@
               <span style="width: 17px; height: 17px; border-radius: 5px; border: 2px solid #ffffff; background: {{row.chip}};"></span>
               <span style="font-size: 15px; font-weight: 700; letter-spacing: -0.008em;">{{row.label}}</span>
               <sc-if value="{{row.hasInfo}}" hint-placeholder-val="{{true}}">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid #c3aad1; font-size: 11px; font-weight: 700; color: #c3aad1;">i</span>
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 999px; border: 1.5px solid #eacff5; font-size: 11px; font-weight: 700; color: #eacff5;">i</span>
               </sc-if>
             </span>
             <span style="display: flex; align-items: center; gap: 9px;">
@@ -115,7 +115,7 @@ class Component extends DCLogic {
   }
   axes() {
     const L = ['low', 'medium-', 'medium', 'medium+', 'high'];
-    const H = {"nose_intensity":{"chip":"#2f88db","fill":"#8fc0e8"},"sweetness":{"chip":"#f2ac13","fill":"#f6cc6e"},"acidity":{"chip":"#16b070","fill":"#6fd3ab"},"tannin":{"chip":"#7c4ceb","fill":"#b39cf2"},"body":{"chip":"#ec6a2e","fill":"#f2a077"},"alcohol":{"chip":"#f2497e","fill":"#f78fae"},"finish":{"chip":"#c53fb5","fill":"#dd8fd3"}};
+    const H = {"nose_intensity":{"chip":"#2f88db","fill":"#8fc0e8"},"sweetness":{"chip":"#f2ac13","fill":"#f6cc6e"},"acidity":{"chip":"#16b070","fill":"#6fd3ab"},"tannin":{"chip":"#8b5cf6","fill":"#b39cf2"},"body":{"chip":"#ec6a2e","fill":"#f2a077"},"alcohol":{"chip":"#f2497e","fill":"#f78fae"},"finish":{"chip":"#0fa5b0","fill":"#7fd3da"}};
     return [
       { key: 'nose_intensity', label: 'Nose intensity', options: L },
       { key: 'sweetness', label: 'Sweetness', options: ['bone dry', 'dry', 'off-dry', 'medium sweet', 'sweet'] },
@@ -125,7 +125,7 @@ class Component extends DCLogic {
       { key: 'alcohol', label: 'Alcohol', options: L },
       { key: 'finish', label: 'Finish', options: ['short', 'medium', 'long'] },
       { key: 'anything_else', label: 'Anything else', free: true },
-    ].map((a) => Object.assign(a, { chip: (H[a.key] || {}).chip || '#c3aad1', fill: (H[a.key] || {}).fill }));
+    ].map((a) => Object.assign(a, { chip: (H[a.key] || {}).chip || '#eacff5', fill: (H[a.key] || {}).fill }));
   }
   setScore(d) {
     const c = this.state.score === null ? 7 : this.state.score + d;
@@ -145,8 +145,8 @@ class Component extends DCLogic {
         valueText: summary,
         // White when answered, a dimmed lilac when not — both sit on the dark
         // folder, so an unanswered row still reads without shouting.
-        valueColor: summary ? '#ffffff' : '#c3aad1',
-        headerBg: isOpen ? '#2e1740' : '#3a1f4d',
+        valueColor: summary ? '#ffffff' : '#eacff5',
+        headerBg: isOpen ? '#7d00a8' : '#9900cc',
         caret: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
         toggle: () => this.setState({ open: isOpen ? '' : a.key }),
         options: (a.options ?? []).map((o, j) => {

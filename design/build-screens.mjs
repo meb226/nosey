@@ -5,13 +5,13 @@ const P = {
   ground: '#dfa3f5', groundTop: '#e9bcf9',
   headline: '#2a1338', sub: '#3d2050',
   badgeBg: '#2a1338', badgeFg: '#f8e2ff',
-  folder: '#3a1f4d', folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#c3aad1',
+  folder: '#9900cc', folderBorder: '#ffffff', folderText: '#ffffff', folderMuted: '#eacff5',
   card: '#ffffff', cardOpen: '#ffffff',
   ink: '#241a2b', muted: '#6f6479', empty: '#b8aec2', hairline: '#ddd4e4',
   star: '#f2ac13', save: '#f2ac13', saveFg: '#241a2b',
   swatches: ['#dfa3f5', '#f2ccff', '#9d6ee8', '#b46ad6'],
 }
-const CHIPS = ['#2f88db', '#f2ac13', '#16b070', '#7c4ceb', '#ec6a2e', '#f2497e', '#c53fb5']
+const CHIPS = ['#2f88db', '#f2ac13', '#16b070', '#8b5cf6', '#ec6a2e', '#f2497e', '#0fa5b0']
 
 const head = `<!doctype html>
 <html>

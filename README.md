@@ -27,6 +27,22 @@ Structure gets checked. Flavors never get graded.
 
 `@vercel/postgres` and `@vercel/kv` are sunset. Do not use them.
 
+## Groups
+
+Everything is scoped to a **group** — the people who taste together. That is
+the unit because the one rule only means anything among people drinking the
+same bottles at the same table: your cellar, your session numbering and the
+hold-off line are all per group.
+
+Signing in with the shared passphrase puts you in the default group ("The
+house"). Invite codes exist in the schema and are not wired up yet.
+
+**What the passphrase still does not do:** anyone holding it can claim any
+display name and land on that person's row. That was true before groups too.
+What changed is that identity is now a stable id rather than a string retyped
+on every device, so putting a real auth provider behind it means setting
+`users.external_id` and reading it in `lib/auth.ts` — no second data migration.
+
 ## Setup
 
 ```bash
@@ -36,16 +52,18 @@ npm run db:push                    # applies db/schema.sql
 npm run dev
 ```
 
-Five environment variables, all listed in `.env.local.example`. `DATABASE_URL`
-and `BLOB_READ_WRITE_TOKEN` are injected by Vercel once the Neon and Blob
-stores exist — `vercel env pull .env.local` brings them down. The other three
-you set yourself.
-
-Generate the cookie secret with:
+Already have a database on the two-person schema?
 
 ```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+npm run db:migrate -- 001
 ```
+
+It backfills a user per distinct taster name, puts every session in the default
+group, and re-keys the three taster-keyed tables. Safe to re-run.
+
+**Rehearse it on a Neon branch before running it on real notes.** It drops
+columns. A passing test suite is good evidence, not a guarantee about your
+data — and branching is instant and free, so there is no reason not to.
 
 ## The home-screen icon
 

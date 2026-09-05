@@ -1,5 +1,26 @@
 export type Taster = string
 
+export type User = {
+  id: string
+  external_id: string | null
+  email: string | null
+  display_name: string
+}
+
+export type Group = {
+  id: string
+  name: string
+  invite_code: string
+}
+
+/** Who is signed in, and which group's cellar they are looking at. */
+export type SessionUser = {
+  id: string
+  displayName: string
+  groupId: string
+  groupName: string
+}
+
 /** The six structure axes, plus finish. These get checked against reference values. */
 export const LEVELS = ['low', 'medium-', 'medium', 'medium+', 'high'] as const
 export type Level = (typeof LEVELS)[number]
@@ -12,6 +33,7 @@ export type Finish = (typeof FINISH)[number]
 
 export type Session = {
   id: string
+  group_id: string
   number: number
   module: string | null
   focus: string | null
@@ -38,7 +60,7 @@ export type Bottle = {
 export type Note = {
   id: string
   bottle_id: string
-  taster: Taster
+  user_id: string
   nose_intensity: Level | null
   sweetness: Sweetness | null
   acidity: Level | null
@@ -59,4 +81,4 @@ export type Note = {
 }
 
 /** What the taste screen submits. */
-export type NoteDraft = Omit<Note, 'id' | 'created_at' | 'taster'>
+export type NoteDraft = Omit<Note, 'id' | 'created_at' | 'user_id'>

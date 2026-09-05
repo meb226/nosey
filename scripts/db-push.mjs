@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless'
 import { readFile } from 'node:fs/promises'
+import { splitStatements } from './sql-split.mjs'
 
 const url = process.env.DATABASE_URL
 if (!url) {
@@ -10,16 +11,10 @@ if (!url) {
 
 const schema = await readFile(new URL('../db/schema.sql', import.meta.url), 'utf8')
 const sql = neon(url)
-
-// Split on statement boundaries; the schema is all plain DDL with no
-// function bodies, so this is safe here.
-const statements = schema
-  .split(';')
-  .map((s) => s.trim())
-  .filter((s) => s && !s.split('\n').every((l) => l.trim().startsWith('--')))
+const statements = splitStatements(schema)
 
 for (const statement of statements) {
   await sql.query(statement)
 }
 
-console.log(`applied ${statements.length} statements`)
+console.log(`applied ${statements.length} statements from db/schema.sql`)

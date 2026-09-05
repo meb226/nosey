@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 import { anthropic, MODEL } from '@/lib/anthropic'
-import { currentTaster } from '@/lib/auth'
+import { currentUser } from '@/lib/auth'
+import { checkRate } from '@/lib/rateLimit'
 import { sql } from '@/lib/db'
+import { groupForSession } from '@/lib/queries'
 import type { Bottle, Note, Session } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -26,12 +28,24 @@ const SYSTEM = `Two bottles were poured side by side to isolate one variable. Th
 Do not grade their flavor descriptors here either. Structure and cause only.`
 
 export async function POST(req: Request) {
-  const taster = await currentTaster()
-  if (!taster) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+  const user = await currentUser()
+  if (!user) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+
+  const rate = await checkRate(user.id, 'flight')
+  if (!rate.ok) {
+    return NextResponse.json(
+      { error: 'slow down a moment' },
+      { status: 429, headers: { 'retry-after': String(rate.retryAfter) } },
+    )
+  }
 
   const { sessionId } = await req.json()
   if (typeof sessionId !== 'string') {
     return NextResponse.json({ error: 'sessionId required' }, { status: 400 })
+  }
+
+  if ((await groupForSession(sessionId)) !== user.groupId) {
+    return NextResponse.json({ error: 'no such session' }, { status: 404 })
   }
 
   const bottles = (await sql`
@@ -44,7 +58,7 @@ export async function POST(req: Request) {
   const notes = (await sql`
     select n.* from notes n
     join bottles b on b.id = n.bottle_id
-    where b.session_id = ${sessionId} and n.taster = ${taster}
+    where b.session_id = ${sessionId} and n.user_id = ${user.id}
   `) as Note[]
 
   // Unlocks only once this taster has written every bottle. Showing the
@@ -58,7 +72,7 @@ export async function POST(req: Request) {
   }
 
   const cached = (await sql`
-    select body from flight_notes where session_id = ${sessionId} and taster = ${taster}
+    select body from flight_notes where session_id = ${sessionId} and user_id = ${user.id}
   `) as { body: unknown }[]
   if (cached[0]) return NextResponse.json(cached[0].body)
 
@@ -91,9 +105,9 @@ Their words — nose: ${n.nose_words.join(', ') || '(none)'}; palate: ${n.palate
 
   const body = response.parsed_output
   await sql`
-    insert into flight_notes (session_id, taster, body)
-    values (${sessionId}, ${taster}, ${JSON.stringify(body)})
-    on conflict (session_id, taster) do nothing
+    insert into flight_notes (session_id, user_id, body)
+    values (${sessionId}, ${user.id}, ${JSON.stringify(body)})
+    on conflict (session_id, user_id) do nothing
   `
 
   return NextResponse.json(body)

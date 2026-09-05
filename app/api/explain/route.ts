@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 import { anthropic, MODEL } from '@/lib/anthropic'
-import { currentTaster } from '@/lib/auth'
+import { currentUser } from '@/lib/auth'
+import { checkRate } from '@/lib/rateLimit'
 import { sql } from '@/lib/db'
+import { groupForBottle } from '@/lib/queries'
 import type { Bottle, Note, Session } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -79,18 +81,32 @@ function describeBottle(b: Bottle): string {
 }
 
 export async function POST(req: Request) {
-  const taster = await currentTaster()
-  if (!taster) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+  const user = await currentUser()
+  if (!user) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+
+  const rate = await checkRate(user.id, 'explain')
+  if (!rate.ok) {
+    return NextResponse.json(
+      { error: 'slow down a moment' },
+      { status: 429, headers: { 'retry-after': String(rate.retryAfter) } },
+    )
+  }
 
   const { bottleId } = await req.json()
   if (typeof bottleId !== 'string') {
     return NextResponse.json({ error: 'bottleId required' }, { status: 400 })
   }
 
-  // The one rule. This taster gets nothing for this bottle until this taster
-  // has written their own note for it. One check, not a security boundary.
+  // Scope first: a bottle id is a uuid, not a secret, and generating an
+  // explanation costs real money. No group, no spend.
+  if ((await groupForBottle(bottleId)) !== user.groupId) {
+    return NextResponse.json({ error: 'no such bottle' }, { status: 404 })
+  }
+
+  // The one rule. You get nothing for this bottle until you have written your
+  // own note for it. One check, not a security boundary.
   const notes = (await sql`
-    select * from notes where bottle_id = ${bottleId} and taster = ${taster}
+    select * from notes where bottle_id = ${bottleId} and user_id = ${user.id}
   `) as Note[]
   const note = notes[0]
   if (!note) {
@@ -98,7 +114,7 @@ export async function POST(req: Request) {
   }
 
   const cached = (await sql`
-    select body from explanations where bottle_id = ${bottleId} and taster = ${taster}
+    select body from explanations where bottle_id = ${bottleId} and user_id = ${user.id}
   `) as { body: unknown }[]
   if (cached[0]) return NextResponse.json(cached[0].body)
 
@@ -139,9 +155,9 @@ ${note.takeaway ? `\nTheir takeaway: ${note.takeaway}` : ''}`
 
   const body = response.parsed_output
   await sql`
-    insert into explanations (bottle_id, taster, body)
-    values (${bottleId}, ${taster}, ${JSON.stringify(body)})
-    on conflict (bottle_id, taster) do nothing
+    insert into explanations (bottle_id, user_id, body)
+    values (${bottleId}, ${user.id}, ${JSON.stringify(body)})
+    on conflict (bottle_id, user_id) do nothing
   `
 
   return NextResponse.json(body)

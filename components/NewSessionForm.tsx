@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AXES } from '@/lib/axes'
+import { resizeImage } from '@/lib/resizeImage'
 
 type Draft = {
   producer: string
@@ -77,8 +78,10 @@ export function NewSessionForm({ nextNumber }: { nextNumber: number }) {
   async function readLabel(i: number, file: File) {
     patch(i, { reading: true, error: null })
 
+    // Shrunk in the browser, so neither the upload, the blob store nor the
+    // vision call ever sees the full-size photo.
     const form = new FormData()
-    form.append('file', file)
+    form.append('file', await resizeImage(file))
     const up = await fetch('/api/upload', { method: 'POST', body: form })
     if (!up.ok) {
       patch(i, { reading: false, error: "Couldn't upload that photo." })

@@ -5,8 +5,12 @@ import { currentUser } from '@/lib/auth'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-/** Label photos are capped so one bad upload cannot fill the blob store. */
-const MAX_BYTES = 12 * 1024 * 1024
+/**
+ * The client resizes to roughly 250 KB before it gets here. This cap is for
+ * the case where that failed and the original went through — generous enough
+ * not to reject a real photo, small enough to bound the damage.
+ */
+const MAX_BYTES = 8 * 1024 * 1024
 
 export async function POST(req: Request) {
   const user = await currentUser()

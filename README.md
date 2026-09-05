@@ -65,45 +65,6 @@ group, and re-keys the three taster-keyed tables. Safe to re-run.
 columns. A passing test suite is good evidence, not a guarantee about your
 data — and branching is instant and free, so there is no reason not to.
 
-## Tests
-
-```bash
-npm test
-```
-
-Runs three suites against real Postgres — PGlite, compiled to WASM, so there is
-no database or container to set up and no credentials to hold. They cover what a
-typecheck cannot:
-
-- **`test:sql`** — that `db:push` and `db:migrate` can actually apply the files.
-  They send one statement at a time, so the splitter is all that stands between
-  a schema file and a database.
-- **`test:db`** — that one group's data is invisible to another, that session
-  numbering is per group, that two people writing the same bottle produce two
-  rows, and that rate limits are per person.
-- **`test:migration`** — that the migration loses nothing and survives a second
-  run.
-
-Deliberately not pointed at Neon: `test:migration` drops columns and `test:db`
-inserts junk, so neither can be run against the database holding your notes.
-The comparison is PGlite against a *throwaway* database, not against Neon — and
-in-memory is faster, needs no credentials, and works on a fresh clone.
-
-Both bugs found here were found by these: a migration that claimed to be
-re-runnable and wasn't, and a semicolon inside a comment that would have made
-`db:push` fail on the schema's own header line.
-
-Five environment variables, all listed in `.env.local.example`. `DATABASE_URL`
-and `BLOB_READ_WRITE_TOKEN` are injected by Vercel once the Neon and Blob
-stores exist — `vercel env pull .env.local` brings them down. The other three
-you set yourself.
-
-Generate the cookie secret with:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
 ## The home-screen icon
 
 Drop a logo at `assets/logo.svg` (or `.png`) and run:

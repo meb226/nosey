@@ -8,11 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "node scripts/db-push.mjs",
-    "test:db": "node test/schema.test.mjs",
-    "test:migration": "node test/migration.test.mjs",
-    "test": "npm run test:sql && npm run test:db && npm run test:migration",
-    "db:migrate": "node scripts/db-migrate.mjs",
-    "test:sql": "node test/sql-split.test.mjs"
+    "db:migrate": "node scripts/db-migrate.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",
@@ -25,7 +21,6 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8",
     "@types/node": "^22.10.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { currentTaster } from '@/lib/auth'
+import { currentUser } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { AXES } from '@/lib/axes'
 import palette from '@/palette.json'
@@ -44,8 +44,8 @@ export default async function Cellar({
 }: {
   searchParams: Promise<{ grape?: string; fav?: string; q?: string }>
 }) {
-  const taster = await currentTaster()
-  if (!taster) redirect('/')
+  const user = await currentUser()
+  if (!user) redirect('/')
 
   const { grape, fav, q } = await searchParams
   const onlyFavourites = fav === '1'
@@ -57,8 +57,9 @@ export default async function Cellar({
            n.score, coalesce(n.favourite, false) as favourite, n.takeaway
     from bottles b
     join sessions s on s.id = b.session_id
-    left join notes n on n.bottle_id = b.id and n.taster = ${taster}
-    where (${grape ?? null}::text is null or b.grape = ${grape ?? null})
+    left join notes n on n.bottle_id = b.id and n.user_id = ${user.id}
+    where s.group_id = ${user.groupId}
+      and (${grape ?? null}::text is null or b.grape = ${grape ?? null})
       and (${onlyFavourites} = false or n.favourite = true)
       and (${query}::text is null or (
         coalesce(b.producer, '') || ' ' || coalesce(b.wine, '') || ' ' ||
@@ -72,7 +73,9 @@ export default async function Cellar({
     select count(*)::int as bottles,
            count(*) filter (where n.favourite)::int as favourites
     from bottles b
-    left join notes n on n.bottle_id = b.id and n.taster = ${taster}
+    join sessions s on s.id = b.session_id
+    left join notes n on n.bottle_id = b.id and n.user_id = ${user.id}
+    where s.group_id = ${user.groupId}
   `) as { bottles: number; favourites: number }[]
 
   const grapes = [...new Set(rows.map((r) => r.grape).filter(Boolean))] as string[]

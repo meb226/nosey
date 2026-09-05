@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 import { anthropic, MODEL } from '@/lib/anthropic'
-import { currentTaster } from '@/lib/auth'
+import { currentUser } from '@/lib/auth'
+import { checkRate } from '@/lib/rateLimit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -34,8 +35,18 @@ Two exceptions, because labels routinely omit them by regional convention:
 Transcribe the producer and cuvée as printed, without translating or expanding them.`
 
 export async function POST(req: Request) {
-  const taster = await currentTaster()
-  if (!taster) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+  const user = await currentUser()
+  if (!user) return NextResponse.json({ error: 'not signed in' }, { status: 401 })
+
+  // Every OCR call is a vision request plus a blob write and nothing about it
+  // is cached, so this is the endpoint a runaway loop would hurt.
+  const rate = await checkRate(user.id, 'ocr')
+  if (!rate.ok) {
+    return NextResponse.json(
+      { error: `that is ${rate.limit} labels in an hour — give it a minute` },
+      { status: 429, headers: { 'retry-after': String(rate.retryAfter) } },
+    )
+  }
 
   const { imageUrl } = await req.json()
   if (typeof imageUrl !== 'string' || !imageUrl) {

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { currentTaster } from '@/lib/auth'
+import { currentUser } from '@/lib/auth'
 import { sql } from '@/lib/db'
 import { SignIn } from '@/components/SignIn'
 import { AXES } from '@/lib/axes'
@@ -13,28 +13,50 @@ type Recent = {
   module: string | null
   bottles: number
   mine: number
-  theirs: number
+  owed: number
 }
 
 export default async function Home() {
-  const taster = await currentTaster()
-  if (!taster) return <SignIn />
+  const user = await currentUser()
+  if (!user) return <SignIn />
 
+  // Everything counted here is this group's. Before scoping existed these were
+  // three unqualified counts over the whole database.
   const [counts] = (await sql`
     select
-      (select count(*)::int from bottles) as bottles,
-      (select count(*)::int from notes where taster = ${taster} and favourite) as favourites,
-      (select count(*)::int from sessions) as sessions
+      (select count(*)::int
+         from bottles b join sessions s on s.id = b.session_id
+        where s.group_id = ${user.groupId}) as bottles,
+      (select count(*)::int
+         from notes n
+         join bottles b on b.id = n.bottle_id
+         join sessions s on s.id = b.session_id
+        where s.group_id = ${user.groupId} and n.user_id = ${user.id} and n.favourite) as favourites,
+      (select count(*)::int from sessions where group_id = ${user.groupId}) as sessions
   `) as { bottles: number; favourites: number; sessions: number }[]
 
   const recent = (await sql`
     select s.id, s.number, s.focus, s.module,
-           count(b.id)::int as bottles,
-           count(*) filter (where n.taster = ${taster})::int as mine,
-           count(*) filter (where n.taster is not null and n.taster <> ${taster})::int as theirs
+           count(distinct b.id)::int as bottles,
+           count(distinct b.id) filter (where n.user_id = ${user.id})::int as mine,
+           -- How many notes the rest of the group still owe across this
+           -- session. Counting people-times-bottles rather than "has anyone
+           -- else written", which went quiet as soon as the first of them did.
+           (
+             select count(*)::int
+             from memberships m
+             cross join bottles b2
+             where m.group_id = ${user.groupId}
+               and m.user_id <> ${user.id}
+               and b2.session_id = s.id
+               and not exists (
+                 select 1 from notes n2 where n2.bottle_id = b2.id and n2.user_id = m.user_id
+               )
+           ) as owed
     from sessions s
     left join bottles b on b.session_id = s.id
     left join notes n on n.bottle_id = b.id
+    where s.group_id = ${user.groupId}
     group by s.id
     order by s.created_at desc
     limit 3
@@ -54,7 +76,7 @@ export default async function Home() {
             Nosey
           </h1>
           <p className="text-[16px] font-semibold text-sub text-pretty">
-            Evening, {taster}. Write it down first.
+            Evening, {user.displayName}. Write it down first.
           </p>
         </div>
 
@@ -129,13 +151,13 @@ export default async function Home() {
 }
 
 /**
- * Surfaces the hold-off rule outside the learn screen: if they have written
- * and you have not, that is the one thing worth knowing before you tap in.
+ * Surfaces the hold-off rule outside the learn screen. Your own outstanding
+ * notes come first, because that is the thing only you can fix.
  */
 function sessionLine(s: Recent): string {
   const base = `Session ${s.number}`
   if (s.bottles === 0) return base
   if (s.mine < s.bottles) return `${base} · ${s.bottles - s.mine} left to write`
-  if (s.theirs < s.bottles) return `${base} · they haven't written theirs`
-  return `${base} · both written`
+  if (s.owed > 0) return `${base} · still waiting on the others`
+  return `${base} · everyone has written`
 }

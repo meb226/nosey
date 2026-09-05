@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { currentTaster } from '@/lib/auth'
-import { getBottles, getMyNotes, getSession, othersPending } from '@/lib/queries'
+import { currentUser } from '@/lib/auth'
+import { getBottles, getMyNotes, getSession, pendingTasters, nameList } from '@/lib/queries'
 import { Explanation } from '@/components/Explanation'
 import { FlightNote } from '@/components/FlightNote'
 
@@ -9,15 +9,17 @@ export const dynamic = 'force-dynamic'
 
 export default async function Learn({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const taster = await currentTaster()
-  if (!taster) redirect('/')
+  const user = await currentUser()
+  if (!user) redirect('/')
 
-  const session = await getSession(id)
+  const session = await getSession(id, user.groupId)
   if (!session) redirect('/')
 
   const bottles = await getBottles(id)
-  const mine = await getMyNotes(id, taster)
-  const pending = await Promise.all(bottles.map((b) => othersPending(b.id, taster)))
+  const mine = await getMyNotes(id, user.id)
+  const pending = await Promise.all(
+    bottles.map((b) => pendingTasters(b.id, user.groupId, user.id)),
+  )
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col bg-gradient-to-b from-groundtop to-ground to-[46%]">
@@ -62,9 +64,11 @@ export default async function Learn({ params }: { params: Promise<{ id: string }
                   Etiquette, not architecture. There is no gate and no 403 —
                   this line is the entire enforcement mechanism.
                 */}
-                {pending[i] && (
+                {pending[i].length > 0 && (
                   <p className="rounded-xl border-2 border-ink bg-amber px-3.5 py-3 text-[15px] font-semibold leading-snug text-ink text-pretty">
-                    She hasn&rsquo;t written this one yet. Hold off talking about it.
+                    {nameList(pending[i])}{' '}
+                    {pending[i].length === 1 ? "hasn't" : "haven't"} written this one yet. Hold
+                    off talking about it.
                   </p>
                 )}
               </>

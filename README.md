@@ -27,6 +27,22 @@ Structure gets checked. Flavors never get graded.
 
 `@vercel/postgres` and `@vercel/kv` are sunset. Do not use them.
 
+## Groups
+
+Everything is scoped to a **group** — the people who taste together. That is
+the unit because the one rule only means anything among people drinking the
+same bottles at the same table: your cellar, your session numbering and the
+hold-off line are all per group.
+
+Signing in with the shared passphrase puts you in the default group ("The
+house"). Invite codes exist in the schema and are not wired up yet.
+
+**What the passphrase still does not do:** anyone holding it can claim any
+display name and land on that person's row. That was true before groups too.
+What changed is that identity is now a stable id rather than a string retyped
+on every device, so putting a real auth provider behind it means setting
+`users.external_id` and reading it in `lib/auth.ts` — no second data migration.
+
 ## Setup
 
 ```bash
@@ -35,6 +51,23 @@ cp .env.local.example .env.local   # then fill it in
 npm run db:push                    # applies db/schema.sql
 npm run dev
 ```
+
+Already have a database on the two-person schema? Run
+`db/migrations/001-groups-and-users.sql` against it first. It backfills a user
+per distinct taster name, puts every session in the default group, and re-keys
+the three taster-keyed tables. Safe to re-run.
+
+## Tests
+
+```bash
+npm test
+```
+
+Runs the schema and migration suites against real Postgres — PGlite, compiled
+to WASM, so there is no database or container to set up. They cover what a
+typecheck cannot: that one group's data is invisible to another, that session
+numbering is per group, that two people writing the same bottle produce two
+rows, and that the migration loses nothing and can be run twice.
 
 Five environment variables, all listed in `.env.local.example`. `DATABASE_URL`
 and `BLOB_READ_WRITE_TOKEN` are injected by Vercel once the Neon and Blob

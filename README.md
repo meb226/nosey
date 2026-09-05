@@ -90,6 +90,22 @@ Three iOS facts the script exists to handle, all of which bite silently:
 
 The current icon is a drawn placeholder, not a real mark.
 
+## Orphaned label photos
+
+The upload fires the moment you photograph a label, but the session is not
+created until you press Start tasting — so an abandoned form leaves its photos
+in the blob store with nothing pointing at them. Deleting a session would do
+the same: the bottle rows cascade, the blobs do not.
+
+```bash
+npm run blob:sweep              # list what would go, delete nothing
+npm run blob:sweep -- --delete  # actually delete
+```
+
+Dry run is the default. Photos younger than 24 hours are skipped whatever the
+database says, so a sweep cannot delete a label somebody is still typing under
+(`--min-age=<hours>` to change that).
+
 ## Installing on a phone
 
 iOS has no install prompt — Safari doesn't implement `beforeinstallprompt`, so

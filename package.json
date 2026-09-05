@@ -10,7 +10,9 @@
     "db:push": "node scripts/db-push.mjs",
     "test:db": "node test/schema.test.mjs",
     "test:migration": "node test/migration.test.mjs",
-    "test": "npm run test:db && npm run test:migration"
+    "test": "npm run test:sql && npm run test:db && npm run test:migration",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "test:sql": "node test/sql-split.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",
